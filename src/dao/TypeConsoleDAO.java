@@ -1,216 +1,104 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+
 import beans.TypeConsole;
+import services.SessionFactoryUtil;
 
-public class TypeConsoleDAO {
-	
-	public static int insert(TypeConsole tc) {
-		int res = 0;
-				
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
-			
-			//Requete
-			String sql = "INSERT INTO TypeConsole(nomConsole) VALUES(?)";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setString(1, tc.getNomConsole());
-			
-			
-			//Execution et traitement de la réponse
-			res = ps.executeUpdate();
-			
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return res;
-	}
-	
-	public static int update(TypeConsole tc) {
-		int res = 0;
-		
-		Connection cnx=null;
-		
-		try {
-			// chargement du driver
-			cnx = ConnexionBDD.getInstance().getCnx();
-			
-			//Requete
-			String sql = "UPDATE TypeConsole SET nomConsole=? WHERE id=?";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setString(1, tc.getNomConsole());
-			ps.setInt(2, tc.getId());
-			
-			//Execution et traitement de la réponse
-			res = ps.executeUpdate();
-			
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return res;
-	}
-	
-	public static int delete(int id) {
-		int res = 0;
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
-			// ou Class.forName(com.mysql.jdbc.Driver.class.getName());
-
-				
-			//Requete
-			String sql = "DELETE FROM TypeConsole WHERE id=?";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setInt(1,id);
-			
-			//Execution et traitement de la réponse
-			res = ps.executeUpdate();
-			
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return res;
-	}
-	
-	
-	
-	public static List<TypeConsole> findAll() {
-
-		List<TypeConsole> ltc = new ArrayList<TypeConsole>();
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
-			// ou Class.forName(com.mysql.jdbc.Driver.class.getName());
-
-			
-			//Requete
-			String sql = "SELECT id,nomConsole FROM TypeConsole";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			
-			//Execution et traitement de la réponse
-			ResultSet res = ps.executeQuery();
-			
-			while(res.next()){
-				ltc.add(new TypeConsole(
-						res.getInt("id"),
-						res.getString("nomConsole")));
-			}
-			
-			res.close();
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		//
-
-		return ltc;
-	}
-	
-	public static TypeConsole find(int id) {
-
-		TypeConsole tc = null;
-		
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
-			// ou Class.forName(com.mysql.jdbc.Driver.class.getName());
-
-		
-			//Requete
-			String sql = "SELECT id,nomConsole FROM TypeConsole WHERE id=?";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setInt(1, id);
-			
-			
-			//Execution et traitement de la réponse
-			ResultSet res = ps.executeQuery();
-			
-			while(res.next()){
-				tc = new TypeConsole(
-						res.getInt("id"),
-						res.getString("nomConsole"));
-				break;
-			}
-			
-			res.close();
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return tc;
-	}
-	public static List<TypeConsole> findAll(int start, int nbElts) {
-
-		List<TypeConsole> ltc = new ArrayList<TypeConsole>();
-		
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
-			// ou Class.forName(com.mysql.jdbc.Driver.class.getName());
-
-		
-			//Requete
-			String sql = "SELECT id,nomConsole FROM TypeConsole LIMIT ?,?";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setInt(1, start);
-			ps.setInt(2, nbElts);
-			
-			
-			//Execution et traitement de la réponse
-			ResultSet res = ps.executeQuery();
-			
-			while(res.next()){
-				ltc.add(new TypeConsole(
-						res.getInt("id"),
-						res.getString("nomConsole")));
-			}
-			
-			res.close();
-			ConnexionBDD.getInstance().closeCnx();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return ltc;
-	}
+public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	
 	public static int countTypeConsole(){
 		
-		int counter = 0;
-		Connection cnx=null;
-		try {
-			cnx = ConnexionBDD.getInstance().getCnx();
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
 		
-			String sql = "SELECT COUNT(*) FROM TypeConsole";
-			PreparedStatement ps = cnx.prepareStatement(sql);
-			ResultSet res = ps.executeQuery();
-			
-			while(res.next()){
-			 counter = res.getInt("COUNT(*)");
-			 break;
-				
-			}
-			
-			
-		}catch (SQLException e) {
-			e.printStackTrace();
+		Query<TypeConsole> req = session.createQuery("from TypeConsole tc");
+		int nbConsoles = req.list().size();
+		
+		session.getTransaction().commit();
+		return nbConsoles;
+	}
+	
+
+	@Override
+	public void add(TypeConsole e) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		//try {
+			session.save(e);
+		/*} catch (Exception e1) {
+			session.getTransaction().rollback();
+			e1.printStackTrace();
 		}
-		return counter;
+		*/
+		session.getTransaction().commit();
+		
+	}
+
+	@Override
+	public List<TypeConsole> list() {
+		
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		Query<TypeConsole> req = session.createQuery("from TypeConsole tc");
+		List<TypeConsole> consoles = req.list();
+		
+		session.getTransaction().commit();
+		return consoles;
+	}
+
+	@Override
+	public TypeConsole get(Long idEntity) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		Object tc = session.get(TypeConsole.class, idEntity);
+		if(tc == null) throw new RuntimeException("Console introuvable");
+		
+		session.getTransaction().commit();
+		return (TypeConsole)tc;
+	}
+
+	@Override
+	public List<TypeConsole> listByAttribute(String attribute) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		Query<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole like :x");
+		req.setParameter("x", "%"+attribute+"%");
+		
+		List<TypeConsole> consoles = req.list();
+		
+		session.getTransaction().commit();
+		return consoles;
+	}
+
+	@Override
+	public void delete(Long idEntity) {
+		// Sera remplacé par EJB
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		//
+		
+		Object tc = session.get(TypeConsole.class, idEntity);
+		if(tc == null) throw new RuntimeException("Console introuvable");
+		
+		session.delete(tc);
+		session.getTransaction().commit();
+		
+	}
+
+	@Override
+	public void update(TypeConsole e) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		session.update(e);
+		session.getTransaction().commit();
+		
 	}
 }

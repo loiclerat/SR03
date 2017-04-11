@@ -21,13 +21,14 @@ import dao.TypeConsoleDAO;
 public class GestionTypeConsole extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-
+	private TypeConsoleDAO tcController;
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public GestionTypeConsole() {
 		super();
-		// TODO Auto-generated constructor stub
+		tcController = new TypeConsoleDAO();
 	}
 
 	/**
@@ -36,28 +37,26 @@ public class GestionTypeConsole extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		List<TypeConsole> ltc = TypeConsoleDAO.findAll();
-		int id = 0;
+		
+		List<TypeConsole> ltc = tcController.list();
+		Long id = (long)0;
+		
 		String action = request.getParameter("action");
 		if (action != null) {
 			String idCh = request.getParameter("id");
 			if (idCh != null) {
 				try {
-					id = Integer.parseInt(idCh);
+					id = Long.parseLong(idCh);
 				} catch (Exception e) {
 
 				}
 			}
 
 			if (action.equals("supprimer")) {
-				TypeConsoleDAO.delete(id);
+				tcController.delete(id);
 			} else if (action.equals("modifier")) {
-				request.setAttribute("tcModif", TypeConsoleDAO.find(id));
+				request.setAttribute("tcModif", tcController.get(id));
 			} else if (action.equals("sort")) {
-				// ordina la lista implicitamente utilizzando il metodo
-				// compareTo dell'interfaccia Comparable (vedere la classe
-				// Users)
 				Collections.sort(ltc);
 			}
 		}
@@ -78,7 +77,7 @@ public class GestionTypeConsole extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		List<TypeConsole> listeTC = TypeConsoleDAO.findAll();
+		List<TypeConsole> listeTC = tcController.list();
 
 		String action = request.getParameter("action");
 
@@ -96,13 +95,13 @@ public class GestionTypeConsole extends HttpServlet {
 
 			String nomConsole = request.getParameter("nomConsole");
 
-			TypeConsole tc = new TypeConsole(0, nomConsole);
+			TypeConsole tc = new TypeConsole(nomConsole);
 			String idStr = request.getParameter("id");
 			if (idStr != null && !idStr.trim().equals("")) {
-				tc.setId(Integer.parseInt(idStr));
-				TypeConsoleDAO.update(tc);
+				tc.setId(Long.parseLong(idStr));
+				tcController.update(tc);
 			} else {
-				TypeConsoleDAO.insert(tc);
+				tcController.add(tc);
 			}
 
 		}

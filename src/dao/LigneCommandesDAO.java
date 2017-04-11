@@ -22,10 +22,9 @@ public class LigneCommandesDAO {
 			//Requete
 			String sql = "INSERT INTO LigneCommande(jeu_id, commande_id, quantity) VALUES(?,?,?,?)";
 			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setInt(1, lc.getJeu().getId());
-			ps.setInt(2, lc.getCommande_id());
-			ps.setInt(3, lc.getQte());
-			ps.setInt(4, lc.getId());
+			ps.setInt(1, lc.getCommande_id());
+			ps.setInt(2, lc.getQte());
+			ps.setInt(3, lc.getId());
 			
 			
 			//Execution et traitement de la réponse
@@ -51,7 +50,6 @@ public class LigneCommandesDAO {
 			//Requete
 			String sql = "UPDATE LigneCommande SET jeu_id=?, commande_id=?, quantity=? WHERE id=?";
 			PreparedStatement ps = cnx.prepareStatement(sql);
-			ps.setInt(1, lc.getJeu().getId());
 			ps.setInt(2, lc.getCommande_id());
 			ps.setInt(3, lc.getQte());
 			ps.setInt(4, lc.getId());
@@ -170,15 +168,16 @@ public class LigneCommandesDAO {
 			
 			//Execution et traitement de la réponse
 			ResultSet res = ps.executeQuery();
-			
+			/*
 			while(res.next()){
 				lc = new LigneCommande(
 						res.getInt("id"),
-						JeuxDAO.find(res.getInt("jeu_id")),
+						//JeuxDAO.find(res.getInt("jeu_id")),
 						res.getInt("commande_id"),
 						res.getInt("quantity"));
 				break;
 			}
+			*/
 			
 			res.close();
 			ConnexionBDD.getInstance().closeCnx();			
@@ -208,7 +207,7 @@ public class LigneCommandesDAO {
 			
 			//Execution et traitement de la réponse
 			ResultSet res = ps.executeQuery();
-			
+			/*
 			while(res.next()){
 				lc.add(new LigneCommande(
 						res.getInt("id"),
@@ -216,7 +215,7 @@ public class LigneCommandesDAO {
 						res.getInt("commande_id"),
 						res.getInt("quantity")));
 			}
-			
+			*/
 			res.close();
 			ConnexionBDD.getInstance().closeCnx();			
 		} catch (SQLException e) {

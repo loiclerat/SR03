@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Liste des types de consoles</title>
+		<title>Game-Shop : Consoles</title>
 		<!--  BOOTSTRAP INTEGRATION  -->
 			
 			<!-- Latest compiled and minified CSS -->

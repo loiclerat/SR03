@@ -1,138 +1,141 @@
 package beans;
 
 import java.io.Serializable;
-import beans.TypeConsole;
-import dao.TypeConsoleDAO;
+import java.util.Collection;
+import java.util.List;
 
-public class Jeu implements Serializable, Comparable<Jeu>{
+import javax.persistence.*;
+
+@Entity
+@Table(name="JEU")
+public class Jeu implements Serializable {
 	
-	private int id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="jeuId")
+	private Long idJeu;
+	
+	@Column(name="titre")
 	private String titre;
+	
+	@Column(name="url_image")
 	private String url_image;
-	private float prix;
-	private TypeConsole tConsole;
 	
-	public Jeu(){}
+	@Column(name="prix")
+	private Double prix;
 	
-	public Jeu(int id, String titre, String url_image, float prix, TypeConsole tConsole) {
+	@ManyToMany
+	@JoinTable(name = "Join_Jeu_TypeConsole", 
+		joinColumns = {@JoinColumn(name = "jeuId")}, 
+		inverseJoinColumns = {@JoinColumn(name = "consoleId")})
+    private List<TypeConsole> consoles ;	
+	
+	
+	public Jeu() {
 		super();
-		this.id = id;
+		//tConsole = null;
+	}
+	
+	public Jeu(String titre, String url_image, Double prix) {
+		super();
+		this.titre = titre;
+		this.url_image = url_image;
+		this.prix = prix;
+	}
+	
+	public Jeu(String titre, String url_image, Double prix, List<TypeConsole> consoles) {
+		super();
+		this.titre = titre;
+		this.url_image = url_image;
+		this.prix = prix;
+		this.consoles = consoles;
+	}
+
+	/**
+	 * @return the consoles
+	 */
+	public List<TypeConsole> getConsoles() {
+		return consoles;
+	}
+
+	/**
+	 * @param consoles the consoles to set
+	 */
+	public void setConsoles(List<TypeConsole> consoles) {
+		this.consoles = consoles;
+	}
+
+	/*
+	public Jeu(Long idJeu, String titre, String url_image, Double prix, Collection<TypeConsole> tConsole) {
+		super();
+		this.idJeu = idJeu;
 		this.titre = titre;
 		this.url_image = url_image;
 		this.prix = prix;
 		this.tConsole = tConsole;
 	}
 	
-	public Jeu(int id, String titre, String url_image, float prix, int tConsole) {
-		super();
-		this.id = id;
-		this.titre = titre;
-		this.url_image = url_image;
-		this.prix = prix;
-		this.tConsole = TypeConsoleDAO.find(tConsole);
+	/**
+	 * @return the tConsole
+	 */
+	/*
+	public Collection<TypeConsole> gettConsole() {
+		return tConsole;
 	}
 
-
-
+	/**
+	 * @param tConsole the tConsole to set
+	 
+	public void settConsole(Collection<TypeConsole> tConsole) {
+		this.tConsole = tConsole;
+	}
+	*/
 	/**
 	 * @return the id
 	 */
-	public int getId() {
-		return id;
+	public Long getId() {
+		return idJeu;
 	}
-
-
-
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setId(Long id) {
+		this.idJeu = id;
 	}
-
-
-
 	/**
 	 * @return the titre
 	 */
 	public String getTitre() {
 		return titre;
 	}
-
-
-
 	/**
 	 * @param titre the titre to set
 	 */
 	public void setTitre(String titre) {
 		this.titre = titre;
 	}
-
-
-
 	/**
 	 * @return the url_image
 	 */
 	public String getUrl_image() {
 		return url_image;
 	}
-
-
-
 	/**
 	 * @param url_image the url_image to set
 	 */
 	public void setUrl_image(String url_image) {
 		this.url_image = url_image;
 	}
-
-
-
 	/**
 	 * @return the prix
 	 */
-	public float getPrix() {
+	public Double getPrix() {
 		return prix;
 	}
-
-
-
 	/**
 	 * @param prix the prix to set
 	 */
-	public void setPrix(float prix) {
+	public void setPrix(Double prix) {
 		this.prix = prix;
 	}
-
-
-
-	/**
-	 * @return the tConsole
-	 */
-	public TypeConsole gettConsole() {
-		return tConsole;
-	}
-
-
-
-	/**
-	 * @param tConsole the tConsole to set
-	 */
-	public void settConsole(TypeConsole tConsole) {
-		this.tConsole = new TypeConsole(tConsole.getId(), tConsole.getNomConsole());
-	}
-	
-	public void settConsole(int TypeConsoleID) {
-		TypeConsole tmp = TypeConsoleDAO.find(TypeConsoleID);
-		this.tConsole = new TypeConsole(tmp.getId(), tmp.getNomConsole());
-	}
-
-
-
-	@Override
-	public int compareTo(Jeu j) {
-		// TODO Auto-generated method stub
-		return this.titre.compareTo(j.titre);
-	}
-
 }

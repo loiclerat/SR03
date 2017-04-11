@@ -22,13 +22,15 @@ import dao.UtilisateursDao;
 @WebServlet("/GestionUsers")
 public class GestionUsers extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private UtilisateursDao uController;
+
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public GestionUsers() {
 		super();
-		// TODO Auto-generated constructor stub
+		uController = new UtilisateursDao();
 	}
 
 	/**
@@ -38,23 +40,24 @@ public class GestionUsers extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		List<Utilisateur> lu = UtilisateursDao.findAll();
-		int id = 0;
+		List<Utilisateur> lu = uController.list();
+		
+		Long id = (long) 0;
 		String action = request.getParameter("action");
 		if (action != null) {
 			String idCh = request.getParameter("id");
 			if (idCh != null) {
 				try {
-					id = Integer.parseInt(idCh);
+					id = Long.parseLong(idCh);
 				} catch (Exception e) {
 
 				}
 			}
 
 			if (action.equals("supprimer")) {
-				UtilisateursDao.delete(id);
+				uController.delete(id);
 			} else if (action.equals("modifier")) {
-				request.setAttribute("uModif", UtilisateursDao.find(id));
+				request.setAttribute("uModif", uController.get(id));
 			} else if (action.equals("sort")) {
 				// ordina la lista implicitamente utilizzando il metodo
 				// compareTo dell'interfaccia Comparable (vedere la classe
@@ -79,7 +82,7 @@ public class GestionUsers extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		List<Utilisateur> listeU = UtilisateursDao.findAll();
+		List<Utilisateur> listeU = uController.list();
 
 		String action = request.getParameter("action");
 
@@ -102,13 +105,13 @@ public class GestionUsers extends HttpServlet {
 			String cpostal = request.getParameter("cpostal");
 			String ville = request.getParameter("ville");
 
-			Utilisateur u = new Utilisateur(0, nom, prenom, mail, login, password, adresse, cpostal, ville);
+			Utilisateur u = new Utilisateur(nom, prenom, mail, login, password, adresse, cpostal, ville);
 			String idStr = request.getParameter("id");
 			if (idStr != null && !idStr.trim().equals("")) {
-				u.setId(Integer.parseInt(idStr));
-				UtilisateursDao.update(u);
+				u.setId(Long.parseLong(idStr));
+				uController.update(u);
 			} else {
-				UtilisateursDao.insert(u);
+				uController.add(u);
 			}
 
 		}

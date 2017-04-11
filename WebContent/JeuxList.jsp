@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Liste des Jjeux</title>
+		<title>Game-Shop : Jeux</title>
 		<!--  BOOTSTRAP INTEGRATION  -->
 			
 			<!-- Latest compiled and minified CSS -->
@@ -16,28 +16,20 @@
 			
 			<!-- Latest compiled and minified JavaScript -->
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		
 	</head>
 	<body>
-	
+		<style type="css">
+				img {
+					max-width: 20%;
+					height: auto;
+				}
+			</style>
 		<jsp:include page="entete.jsp">
 			<jsp:param value="Florian" name="username"/>
 		</jsp:include>
 		<div class="container">
-			<h1>Users List</h1>
-			<!-- 
-			<h4>Trier par</h4>
-			
-			Tri :
-			<form  class="form-inline" method="post" action="GestionUsers">
-				<div class="radio">
-				    <label><input name="sortType" type="radio" value="1"/> nom</label>
-				    <label><input name="sortType" type="radio" value="2"/> login</label>
-				    <input type="hidden" name="action" value="sort" />
-				</div>
-				<button type="submit" class="btn btn-default">Trier</button>
-			</form>
-			-->
+			<h1>Liste des Jeux</h1>
+
 			<table class="table">
 			<tr>
 				<th>ID</th>
@@ -46,7 +38,7 @@
 				</th>
 				<th>URL</th>
 				<th>PRIX</th>
-				<th>CONSOLE</th>
+				<!-- <th>CONSOLE</th> -->
 				<th>ACTIONS</th>
 			</tr>
 				<%
@@ -60,7 +52,7 @@
 							<td><%=j.getTitre()%></td>
 							<td><%=j.getUrl_image()%></td>
 							<td><%=j.getPrix()%></td>
-							<td><%=j.gettConsole().getNomConsole()%></td>
+							
 							<td>
 								<a href="GestionJeux?action=supprimer&id=<%=j.getId()%>">Supprimer</a>
 								<a href="GestionJeux?action=modifier&id=<%=j.getId()%>">Modifier</a>	
@@ -90,19 +82,6 @@
 					<br />
 					<label for="prix">Prix :</label>
 					<input type="text" name="prix" id="prix" value="${jModif.prix}"/>
-					<br />
-					<label for="typeConsole_id">Console :</label>
-					
-					<select name="typeConsole_id" id="typeConsole_id" class="form-control">
-					<%
-						List<TypeConsole> ltc = TypeConsoleDAO.findAll();
-						for(TypeConsole j : ltc){
-					%>
-					  <option value=<%= j.getId() %>><%=j.getNomConsole() %></option>
-					<%
-						}
-					%>
-					</select>
 					
 					<br />
 					<input type="hidden" name=id value="${jModif.id}"/>

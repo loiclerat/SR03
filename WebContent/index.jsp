@@ -33,14 +33,6 @@
 
 
 	<br />
-	<a href="FirstServlet">Une première servlet (conf annotation)</a>
-	<br />
-	<a href="Servlet2">Une deuxieme servlet (conf xml)</a>
-	<br />
-	<a href="LoginServlet">Traitement d'un formulaire</a>
-	<br />
-	<a href="ContactServlet">Contact us</a>
-	<br />
 	<a href="GestionUsers">Liste d'utilisateurs</a>
 	<br />
 	<a href="GestionUsersPagines?page=1">Liste d'utilisateurs avec
@@ -49,8 +41,6 @@
 	<a href="UseCookies">Liste cookies</a>
 	<br />
 	<a href="GestionAchats?action=showForm">Effectuer des achats</a>
-	<br />
-	<a href="blabla">Tester 404</a>
 	<br />
 	<a href="espaceAdmin">Tester interception</a>
 	<br />

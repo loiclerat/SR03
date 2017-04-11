@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hibernate.HibernateException;
+
 
 import beans.Jeu;
-import beans.NameComp;
-import beans.UsernameComp;
 import dao.JeuxDAO;
 
 /**
@@ -22,44 +22,45 @@ import dao.JeuxDAO;
 public class GestionJeux extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-
+	//private JeuxDAO jController  = new JeuxDAO();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public GestionJeux() {
 		super();
-		// TODO Auto-generated constructor stub
+		//jController  = new JeuxDAO();
 	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		List<Jeu> lj = JeuxDAO.findAll();
-		int id = 0;
+			HttpServletResponse response) throws ServletException, IOException, HibernateException {
+		JeuxDAO jController  = new JeuxDAO();
+		List<Jeu> lj = jController.list();
+		Long id = (long) 0;
 		String action = request.getParameter("action");
 		if (action != null) {
 			String idCh = request.getParameter("id");
 			if (idCh != null) {
 				try {
-					id = Integer.parseInt(idCh);
+					id = Long.parseLong(idCh);
 				} catch (Exception e) {
 
 				}
 			}
 
 			if (action.equals("supprimer")) {
-				JeuxDAO.delete(id);
+				jController.delete(id);
 			} else if (action.equals("modifier")) {
-				request.setAttribute("jModif", JeuxDAO.find(id));
+				request.setAttribute("jModif", jController.get(id));
 			} else if (action.equals("sort")) {
 				// ordina la lista implicitamente utilizzando il metodo
 				// compareTo dell'interfaccia Comparable (vedere la classe
 				// Users)
-				Collections.sort(lj);
+				//Collections.sort(lj);
 			}
 		}
 
@@ -76,10 +77,11 @@ public class GestionJeux extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		List<Jeu> listeJ = JeuxDAO.findAll();
+		JeuxDAO jController  = new JeuxDAO();
+		List<Jeu> listeJ = jController.list();
 
 		String action = request.getParameter("action");
 
@@ -97,16 +99,16 @@ public class GestionJeux extends HttpServlet {
 
 			String titre = request.getParameter("titre");
 			String url_image = request.getParameter("url_image");
-			Float prix = Float.parseFloat(request.getParameter("prix"));
-			int typeConsole_id = Integer.parseInt(request.getParameter("typeConsole_id"));
+			Double prix = Double.parseDouble(request.getParameter("prix"));
+			//Long typeConsole_id = Long.parseLong(request.getParameter("typeConsole_id"));
 
-			Jeu j = new Jeu(0, titre, url_image, prix, typeConsole_id);
+			Jeu j = new Jeu(titre, url_image, prix); //, typeConsole_id
 			String idStr = request.getParameter("id");
 			if (idStr != null && !idStr.trim().equals("")) {
-				j.setId(Integer.parseInt(idStr));
-				JeuxDAO.update(j);
+				j.setId(Long.parseLong(idStr));
+				jController.update(j);
 			} else {
-				JeuxDAO.insert(j);
+				jController.add(j);
 			}
 
 		}
