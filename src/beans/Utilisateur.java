@@ -1,11 +1,15 @@
 package beans;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,7 +34,10 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	@Column(name="cpostal")
 	private String cpostal;
 	@Column(name="ville")
-	private String ville;		
+	private String ville;	
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Commande> commandes = new ArrayList<Commande>();
 
 	public Utilisateur() {
 
@@ -204,6 +211,15 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 
 
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "Utilisateur [nom=" + nom + ", prenom=" + prenom + "]";
+	}
+
 	/**
 	 * @param ville the ville to set
 	 */
@@ -214,6 +230,20 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	@Override
 	public int compareTo(Utilisateur o) {
 		return this.nom.compareTo(o.nom);
+	}
+
+	/**
+	 * @return the commandes
+	 */
+	public List<Commande> getCommandes() {
+		return commandes;
+	}
+
+	/**
+	 * @param commandes the commandes to set
+	 */
+	public void setCommandes(List<Commande> commandes) {
+		this.commandes = commandes;
 	}
 
 

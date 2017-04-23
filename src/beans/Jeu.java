@@ -1,7 +1,9 @@
 package beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import javax.persistence.*;
 @Table(name="JEU")
 public class Jeu implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="jeuId")
@@ -24,16 +28,17 @@ public class Jeu implements Serializable {
 	@Column(name="prix")
 	private Double prix;
 	
-	@ManyToMany
-	@JoinTable(name = "Join_Jeu_TypeConsole", 
-		joinColumns = {@JoinColumn(name = "jeuId")}, 
-		inverseJoinColumns = {@JoinColumn(name = "consoleId")})
-    private List<TypeConsole> consoles ;	
+	@OneToMany
+	@JoinTable(name = "Jeu_TypeConsole",
+    	joinColumns = {@JoinColumn(name = "jeuId")},
+    	inverseJoinColumns = {@JoinColumn(name = "TypeConsoleId")})
+    private List<TypeConsole> consoles ;
+	
 	
 	
 	public Jeu() {
 		super();
-		//tConsole = null;
+		consoles = new ArrayList<TypeConsole>();
 	}
 	
 	public Jeu(String titre, String url_image, Double prix) {
@@ -54,6 +59,7 @@ public class Jeu implements Serializable {
 	/**
 	 * @return the consoles
 	 */
+
 	public List<TypeConsole> getConsoles() {
 		return consoles;
 	}
@@ -61,35 +67,17 @@ public class Jeu implements Serializable {
 	/**
 	 * @param consoles the consoles to set
 	 */
+	
 	public void setConsoles(List<TypeConsole> consoles) {
 		this.consoles = consoles;
 	}
-
-	/*
-	public Jeu(Long idJeu, String titre, String url_image, Double prix, Collection<TypeConsole> tConsole) {
-		super();
-		this.idJeu = idJeu;
-		this.titre = titre;
-		this.url_image = url_image;
-		this.prix = prix;
-		this.tConsole = tConsole;
-	}
 	
-	/**
-	 * @return the tConsole
-	 */
-	/*
-	public Collection<TypeConsole> gettConsole() {
-		return tConsole;
+	public void addConsole(TypeConsole c) {
+		this.consoles.add(c);
 	}
 
-	/**
-	 * @param tConsole the tConsole to set
-	 
-	public void settConsole(Collection<TypeConsole> tConsole) {
-		this.tConsole = tConsole;
-	}
-	*/
+	
+	
 	/**
 	 * @return the id
 	 */
@@ -138,4 +126,21 @@ public class Jeu implements Serializable {
 	public void setPrix(Double prix) {
 		this.prix = prix;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String init = "{\"jeuId\":\""+idJeu+"\", \"titre\":\""+titre+"\", \"url_image\":\""+url_image+"\", \"prix\":\""+prix+"\", \"consoles\":[";
+		for(Iterator<TypeConsole> i = consoles.iterator(); i.hasNext(); ) {
+			TypeConsole item = i.next();
+		    init = init + item.toString();
+		    if(i.hasNext()) init = init + ",";
+		}
+		init = init + "]}";
+		return init;
+	}
+	
+	
 }

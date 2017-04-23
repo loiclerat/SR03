@@ -76,6 +76,19 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 		session.getTransaction().commit();
 		return consoles;
 	}
+	
+	public TypeConsole getByAttribute(String attribute) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		Query<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole = :x");
+		req.setParameter("x", attribute);
+		
+		TypeConsole console = req.getSingleResult();
+		
+		session.getTransaction().commit();
+		return console;
+	}
 
 	@Override
 	public void delete(Long idEntity) {

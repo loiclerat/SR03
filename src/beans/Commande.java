@@ -1,68 +1,48 @@
 package beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import dao.UtilisateursDao;
+import java.sql.Date;
 
-public class Commande implements Serializable{
+import javax.persistence.*;
+
+@Entity
+@Table(name="COMMANDE")
+public class Commande implements Serializable {
 	
-	private int id;
-	private List<LigneCommande> lignes;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="COMMANDE_ID")
+	private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="USER_ID")
 	private Utilisateur user;
-	private Date date_commande;
-
-
-	public Commande(int id, int userID, Date date){
-		lignes = new ArrayList<LigneCommande>();
-		this.id = id;
-		this.user = UtilisateursDao.find(userID);
-		this.date_commande = date;
-	}
-
-	public Commande(Utilisateur u) {
-		lignes = new ArrayList<LigneCommande>();
-		user = u;
-		date_commande = new Date();
-	}
 	
-	public Commande() {
-		lignes = new ArrayList<LigneCommande>();
-		user = new Utilisateur();
-		date_commande = new Date();
-	}
+	@Column(name="COMMANDE_PRICE")
+	private Float price;
 	
+	@Column(name="COMMANDE_DATE")
+	private Date dateCommande;
+
+	public Commande(Utilisateur user, Float price, Date dateCommande) {
+		super();
+		this.user = user;
+		this.price = price;
+		this.dateCommande = dateCommande;
+	}
+
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	/**
-	 * 
-	 */
-	
-	/**
-	 * @return the date_commande
-	 */
-	public Date getDate_commande() {
-		return date_commande;
-	}
-
-	/**
-	 * @param date_commande the date_commande to set
-	 */
-	public void setDate_commande(Date date_commande) {
-		this.date_commande = date_commande;
 	}
 
 	/**
@@ -79,24 +59,33 @@ public class Commande implements Serializable{
 		this.user = user;
 	}
 
-	public List<LigneCommande> getLignes() {
-		return lignes;
+	/**
+	 * @return the price
+	 */
+	public Float getPrice() {
+		return price;
 	}
 
-	public void setLignes(List<LigneCommande> lignes) {
-		this.lignes = lignes;
+	/**
+	 * @param price the price to set
+	 */
+	public void setPrice(Float price) {
+		this.price = price;
+	}
+
+	/**
+	 * @return the dateCommande
+	 */
+	public Date getDateCommande() {
+		return dateCommande;
+	}
+
+	/**
+	 * @param dateCommande the dateCommande to set
+	 */
+	public void setDateCommande(Date dateCommande) {
+		this.dateCommande = dateCommande;
 	}
 	
-	public double getTotal(){
-		double total = 0;
-	
-		for (LigneCommande lc : lignes){
-			total+=lc.getTotal();
-		}
-		//for(int i=0;i<lignes.size();i++){
-		//	total = total + lignes.get(i).getTotal();
-		//}
-		return total;
-	}
 	
 }

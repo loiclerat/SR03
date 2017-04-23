@@ -23,8 +23,7 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<Utilisateur> req = session.createQuery("from Utilisateur u");
-		int nbUsers = req.list().size();
+		int nbUsers = session.createQuery("from Utilisateur u").list().size();
 		
 		session.getTransaction().commit();
 		return nbUsers;
@@ -34,6 +33,24 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	public void add(Utilisateur e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
+		
+		//try {
+			session.save(e);
+		/*} catch (Exception e1) {
+			session.getTransaction().rollback();
+			e1.printStackTrace();
+		}*/
+		
+		session.getTransaction().commit();
+		
+	}
+	
+	
+	public void add(String nom, String prenom, String mail, String login, String password, String adresse, String cpostal, String ville) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		Utilisateur e = new Utilisateur(nom, prenom, mail, login, password, adresse, cpostal, ville);
 		//try {
 			session.save(e);
 		/*} catch (Exception e1) {
@@ -50,7 +67,7 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<Utilisateur> req = session.createQuery("from Utilisateur u");
+		Query req = session.createQuery("from Utilisateur u");
 		List<Utilisateur> users = req.list();
 		
 		session.getTransaction().commit();
@@ -75,10 +92,7 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		session.beginTransaction();
 		
 		//List<Jeu> jux = session.createQuery("FROM Jeu").list();
-		Query<Utilisateur> req = session.createQuery("from Utilisateur u where u.login like :x");
-		req.setParameter("x", "%"+attribute+"%");
-		
-		List<Utilisateur> users = req.list();
+		List<Utilisateur> users = (List<Utilisateur>) session.createQuery("from Utilisateur u where u.login like :x").setParameter("x", "%"+attribute+"%").list();		
 		
 		session.getTransaction().commit();
 		return users;

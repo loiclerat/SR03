@@ -21,47 +21,25 @@ public class TypeConsole implements Serializable, Comparable<TypeConsole>{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="consoleId")
 	private Long TypeConsoleId;
+	
 	@Column(name="nomConsole")
 	private String nomConsole;
 	
-	/*@JoinTable(name = "Join_Jeu_TypeConsole", 
-		joinColumns = {@JoinColumn(name = "consoleId")}, 
-		inverseJoinColumns = {@JoinColumn(name = "jeuId")})
-		*/
-	@ManyToMany(mappedBy="consoles")
-	private List<Jeu> jeux;
-	
 	public TypeConsole(){}
 	
-	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "{\"consoleId\":\""+TypeConsoleId+"\" , \"nomConsole\":\""+nomConsole+"\"}";
+	}
+
 	public TypeConsole(String nomConsole) {
 		super();
 		this.nomConsole = nomConsole;
 	}
-
-
-	public TypeConsole(String nomConsole, List<Jeu> jeux) {
-		super();
-		this.nomConsole = nomConsole;
-		this.jeux = jeux;
-	}
-
-
-	/**
-	 * @return the jeux
-	 */
-	public List<Jeu> getJeux() {
-		return jeux;
-	}
-
-
-	/**
-	 * @param jeux the jeux to set
-	 */
-	public void setJeux(List<Jeu> jeux) {
-		this.jeux = jeux;
-	}
-
 
 	/**
 	 * @return the id

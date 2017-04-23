@@ -95,7 +95,7 @@ INSERT INTO `TypeConsole` (`consoleId`, `nomConsole`) VALUES
 --
 
 CREATE TABLE `Utilisateur` (
-  `userId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL PRIMARY KEY,
   `nom` varchar(255) DEFAULT NULL,
   `prenom` varchar(255) DEFAULT NULL,
   `mail` varchar(255) DEFAULT NULL,
@@ -111,11 +111,13 @@ CREATE TABLE `Utilisateur` (
 --
 
 INSERT INTO `Utilisateur` (`userId`, `nom`, `prenom`, `mail`, `login`, `password`, `adresse`, `cpostal`, `ville`) VALUES
-(1, 'Cartier', 'Florian', 'flo.cartier@hotmail.fr', 'flcartie', 'floflo', '1 bis rue de l\'Ã©pargne', '60200', 'CompiÃ¨gne'),
+(1, 'Cartier', 'Florian', 'flo.cartier@hotmail.fr', 'flcartie', 'floflo', '1 bis rue de l\'Ã©pargne', '60200', 'Compiègne'),
 (2, 'Hordequin', 'Theo', 'theo@mail.fr', 'thordequ', 'theotheo', 'je ne sais pas', '60200', 'CompiÃ¨gne'),
-(3, 'Jeannot', 'Paul', 'paul.jeannot@gmail.com', 'pjeanno', 'paulpaul', 'Pres de l\'utc', '60200', 'CompiÃ¨gne'),
+(3, 'Jeannot', 'Paul', 'paul.jeannot@gmail.com', 'pjeanno', 'paulpaul', 'Pres de l\'utc', '60200', 'Compiègne'),
 (8, 'Duran', 'Ester', 'esterduranbarquilla@gmail.com', 'estDuran', 'passEster', 'spain', '23453', 'Madronera');
 
+
+CREATE TABLE `td2`.`Jeu_TypeConsole` ( `JeuId` INT(11) NOT NULL , `TypeConsoleId` INT(11) UNIQUE NOT NULL , PRIMARY KEY (`JeuId`, `TypeConsoleId`)) ENGINE = InnoDB;
 --
 -- Index pour les tables exportées
 --

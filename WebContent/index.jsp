@@ -9,41 +9,6 @@
 </head>
 <body>
 
-	<%--@include file="entete.jsp"%>  
-	  con questo comando l'include è statico, 
-	mentre con il prossimo posso recuperare un parametro
-	--%>
-	
-	<jsp:include page="entete.jsp">
-		<jsp:param value="Florian" name="username"/>
-	</jsp:include>
-	
-	<h1>Back office projet SR03</h1>
-	Nombre de visiteurs : ${applicationScope.nbUsers}
-
-
-	<%-- alternative possibili per l'affichage 
- jsp:useBean id="nbUsers" class="java.lang.Integer" 
- scope="application" 
- equivalente alla seguente
- <%=(Integer)getServletContext().getAttribute("nbUsers") %>
- <%=(Integer)application.getAttribute("nbUsers") %>
- 
- --%>
-
-
-	<br />
-	<a href="GestionUsers">Liste d'utilisateurs</a>
-	<br />
-	<a href="GestionUsersPagines?page=1">Liste d'utilisateurs avec
-		pagination</a>
-	<br />
-	<a href="UseCookies">Liste cookies</a>
-	<br />
-	<a href="GestionAchats?action=showForm">Effectuer des achats</a>
-	<br />
-	<a href="espaceAdmin">Tester interception</a>
-	<br />
-	<%@include file="ppage.jsp"%>
+	Coucou, ça c'est l'index.
 </body>
 </html>
