@@ -2,7 +2,8 @@ package dao;
 
 import java.util.List;
 
-import org.hibernate.Query;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.Session;
 
 import beans.TypeConsole;
@@ -15,8 +16,8 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<TypeConsole> req = session.createQuery("from TypeConsole tc");
-		int nbConsoles = req.list().size();
+		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc");
+		int nbConsoles = req.getResultList().size();
 		
 		session.getTransaction().commit();
 		return nbConsoles;
@@ -44,8 +45,8 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<TypeConsole> req = session.createQuery("from TypeConsole tc");
-		List<TypeConsole> consoles = req.list();
+		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc");
+		List<TypeConsole> consoles = req.getResultList();
 		
 		session.getTransaction().commit();
 		return consoles;
@@ -68,10 +69,10 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole like :x");
+		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole like :x");
 		req.setParameter("x", "%"+attribute+"%");
 		
-		List<TypeConsole> consoles = req.list();
+		List<TypeConsole> consoles = req.getResultList();
 		
 		session.getTransaction().commit();
 		return consoles;
@@ -81,7 +82,7 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole = :x");
+		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole = :x");
 		req.setParameter("x", attribute);
 		
 		TypeConsole console = req.getSingleResult();

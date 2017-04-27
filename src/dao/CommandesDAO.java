@@ -6,15 +6,16 @@ import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 
-import beans.Jeu;
+import beans.Commande;
 import services.SessionFactoryUtil;
 
-public class JeuxDAO implements DAOFactory<Jeu> {
+public class CommandesDAO implements DAOFactory<Commande>{
+
 	
-	public JeuxDAO(){}
+	public CommandesDAO(){}
 	
 	@Override
-	public void add(Jeu e) {
+	public void add(Commande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		//try {
@@ -28,40 +29,40 @@ public class JeuxDAO implements DAOFactory<Jeu> {
 	}
 
 	@Override
-	public List<Jeu> list() {
+	public List<Commande> list() {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		TypedQuery<Jeu> req = session.createQuery("select j from Jeu j");
-		List<Jeu> jeux = req.getResultList();
+		TypedQuery<Commande> req = session.createQuery("select c from Commande c");
+		List<Commande> commandes = req.getResultList();
 		
 		session.getTransaction().commit();
-		return jeux;
+		return commandes;
 	}
 
 	@Override
-	public Jeu get(Long idEntity) {
+	public Commande get(Long idEntity) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		Object j = session.get(Jeu.class, idEntity);
-		if(j == null) throw new RuntimeException("Jeu introvable");
+		Object j = session.get(Commande.class, idEntity);
+		if(j == null) throw new RuntimeException("Commande introvable");
 		session.getTransaction().commit();
-		return (Jeu)j;
+		return (Commande)j;
 	}
 
 	@Override
-	public List<Jeu> listByAttribute(String attribute) {
+	public List<Commande> listByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
 		//List<Jeu> jux = session.createQuery("FROM Jeu").list();
-		TypedQuery<Jeu> req = session.createQuery("from Jeu j where j.titre like :x");
+		TypedQuery<Commande> req = session.createQuery("from Commande j where j.titre like :x");
 		req.setParameter("x", "%"+attribute+"%");
 		
-		List<Jeu> jeux = req.getResultList();
+		List<Commande> commandes = req.getResultList();
 		
 		session.getTransaction().commit();
-		return jeux;
+		return commandes;
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class JeuxDAO implements DAOFactory<Jeu> {
 		session.beginTransaction();
 		//
 		
-		Object j = session.get(Jeu.class, idEntity);
-		if(j == null) throw new RuntimeException("Jeu introvable");
+		Object j = session.get(Commande.class, idEntity);
+		if(j == null) throw new RuntimeException("Commande introvable");
 		
 		session.delete(j);
 		session.getTransaction().commit();
@@ -80,7 +81,7 @@ public class JeuxDAO implements DAOFactory<Jeu> {
 	}
 
 	@Override
-	public void update(Jeu e) {
+	public void update(Commande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		

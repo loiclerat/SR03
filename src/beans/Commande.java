@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Commande implements Serializable {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="COMMANDE_ID")
 	private Long id;
 	
@@ -24,6 +24,9 @@ public class Commande implements Serializable {
 	@Column(name="COMMANDE_DATE")
 	private Date dateCommande;
 
+	public Commande(){
+		super();
+	}
 	public Commande(Utilisateur user, Float price, Date dateCommande) {
 		super();
 		this.user = user;
@@ -48,9 +51,10 @@ public class Commande implements Serializable {
 	/**
 	 * @return the user
 	 */
-	public Utilisateur getUser() {
+	// Commenté pour éviter les boucles infinies
+	/*public Utilisateur getUser() {
 		return user;
-	}
+	}*/
 
 	/**
 	 * @param user the user to set
