@@ -12,6 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 @Entity
 @Table(name="UTILISATEUR")
 public class Utilisateur implements Serializable, Comparable<Utilisateur>{
@@ -161,7 +165,9 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
-		this.password = password;
+		ConfigurablePasswordEncryptor encryptor = new ConfigurablePasswordEncryptor();
+		encryptor.setAlgorithm("SHA-256");
+		this.password = encryptor.encryptPassword(password);
 	}
 
 
