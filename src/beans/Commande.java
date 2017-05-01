@@ -1,7 +1,10 @@
 package beans;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -23,10 +26,14 @@ public class Commande implements Serializable {
 	
 	@Column(name="COMMANDE_DATE")
 	private Date dateCommande;
+	
+	@OneToMany(mappedBy = "commande_id", cascade = CascadeType.ALL)
+	private List<LigneCommande> ligneCommandes = new ArrayList<LigneCommande>();
 
 	public Commande(){
 		super();
 	}
+	
 	public Commande(Utilisateur user, Float price, Date dateCommande) {
 		super();
 		this.user = user;
@@ -51,7 +58,7 @@ public class Commande implements Serializable {
 	/**
 	 * @return the user
 	 */
-	// Commenté pour éviter les boucles infinies
+	// Commentï¿½ pour ï¿½viter les boucles infinies
 	/*public Utilisateur getUser() {
 		return user;
 	}*/
@@ -80,15 +87,31 @@ public class Commande implements Serializable {
 	/**
 	 * @return the dateCommande
 	 */
-	public Date getDateCommande() {
-		return dateCommande;
+	public String getDateCommande() {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		
+		return formatter.format(dateCommande);
 	}
 
 	/**
-	 * @param dateCommande the dateCommande to set
+	 * @param date the dateCommande to set
 	 */
-	public void setDateCommande(Date dateCommande) {
-		this.dateCommande = dateCommande;
+	public void setDateCommande(Date date) {
+		this.dateCommande = date;
+	}
+
+	/**
+	 * @return the ligneCommandes
+	 */
+	public List<LigneCommande> getLigneCommandes() {
+		return ligneCommandes;
+	}
+
+	/**
+	 * @param ligneCommandes the ligneCommandes to set
+	 */
+	public void setLigneCommandes(List<LigneCommande> ligneCommandes) {
+		this.ligneCommandes = ligneCommandes;
 	}
 	
 	
