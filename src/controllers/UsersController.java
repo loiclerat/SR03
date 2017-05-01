@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -65,7 +66,6 @@ public class UsersController {
 	}
 	
 	@POST
-	@Path("/create")
 	@Produces("text/plain")
 	public Response createuser(@QueryParam("nom") String nom,
 			@QueryParam("prenom") String prenom,
@@ -76,13 +76,55 @@ public class UsersController {
 			@QueryParam("cpostal") String cpostal,
 			@QueryParam("ville") String ville){
 		
-		users.add(nom, prenom, mail, login, password, adresse, cpostal, ville);
+		Utilisateur newUser = new Utilisateur(nom, prenom, mail, login, password, adresse, cpostal, ville);
+		users.add(newUser);
 		
 		return Response
 				   .status(200)
 				   .entity("createuser is called, nom : " + nom + ", prenom : " + prenom
-					+ ", mail" + mail + ", login" + login + ", password" + password + ", adresse" + adresse
-					+ ", code postal" + cpostal + ", ville" + ville).build();
+					+ ", mail : " + mail + ", login : " + login + ", password : " + password + ", adresse : " + adresse
+					+ ", code postal : " + cpostal + ", ville : " + ville).build();
+		
+	}
+	
+	@PUT
+	@Path("/{idUser}")
+	@Produces("text/plain")
+	public Response updateUser(@PathParam("idUser") Long id,
+			@QueryParam("nom") String nom,
+			@QueryParam("prenom") String prenom,
+			@QueryParam("mail") String mail,
+			@QueryParam("login") String login,
+			@QueryParam("password") String password,
+			@QueryParam("adresse") String adresse,
+			@QueryParam("cpostal") String cpostal,
+			@QueryParam("ville") String ville){
+		
+		Utilisateur u;
+		try {
+			u = users.get(id);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("User not found for ID : "+ id).build();
+		}
+			
+		u.setNom(nom);
+		u.setPrenom(prenom);
+		u.setMail(mail);
+		u.setLogin(login);
+		u.setPassword(password);
+		u.setAdresse(adresse);
+		u.setCpostal(cpostal);
+		u.setVille(ville);
+		users.update(u);
+		
+		return Response
+				   .status(200)
+				   .entity("UpdateUser is called, nom : " + nom + ", prenom : " + prenom
+					+ ", mail : " + mail + ", login : " + login + ", password : " + password + ", adresse : " + adresse
+					+ ", code postal : " + cpostal + ", ville : " + ville).build();
+		
 	}
 	
 	

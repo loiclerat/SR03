@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.TypedQuery;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -19,8 +17,6 @@ import services.SessionFactoryUtil;
 
 public class UtilisateursDao implements DAOFactory<Utilisateur>{
 
-	
-	
 	public static int countUsers(){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -69,8 +65,8 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		TypedQuery<Utilisateur> req = session.createQuery("from Utilisateur u");
-		List<Utilisateur> users = req.getResultList();
+		Query req = session.createQuery("from Utilisateur u");
+		List<Utilisateur> users = req.list();
 		
 		session.getTransaction().commit();
 		return users;
