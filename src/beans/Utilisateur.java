@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 @Entity
 @Table(name="UTILISATEUR")
 public class Utilisateur implements Serializable, Comparable<Utilisateur>{
@@ -34,15 +37,15 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	@Column(name="cpostal")
 	private String cpostal;
 	@Column(name="ville")
-	private String ville;	
-	
+	private String ville;
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Commande> commandes = new ArrayList<Commande>();
 
 	public Utilisateur() {
 
 	}
-	
+
 	public Utilisateur(String nom, String prenom, String mail, String login, String password, String adresse,
 			String cpostal, String ville) {
 		super();
@@ -161,6 +164,11 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
+		/* Commenté pour le moment, peut être décommenté a volonté pour essayer de l'intégrer
+		ConfigurablePasswordEncryptor encryptor = new ConfigurablePasswordEncryptor();
+		encryptor.setAlgorithm("SHA-256");
+		this.password = encryptor.encryptPassword(password);
+		*/
 		this.password = password;
 	}
 
