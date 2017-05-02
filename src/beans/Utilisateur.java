@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 
+
 @Entity
 @Table(name="UTILISATEUR")
 public class Utilisateur implements Serializable, Comparable<Utilisateur>{
@@ -53,7 +54,7 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 		this.prenom = prenom;
 		this.mail = mail;
 		this.login = login;
-		this.password = password;
+		this.setPassword(password);
 		this.adresse = adresse;
 		this.cpostal = cpostal;
 		this.ville = ville;
@@ -164,12 +165,9 @@ public class Utilisateur implements Serializable, Comparable<Utilisateur>{
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
-		/* Commenté pour le moment, peut être décommenté a volonté pour essayer de l'intégrer
 		ConfigurablePasswordEncryptor encryptor = new ConfigurablePasswordEncryptor();
 		encryptor.setAlgorithm("SHA-256");
 		this.password = encryptor.encryptPassword(password);
-		*/
-		this.password = password;
 	}
 
 

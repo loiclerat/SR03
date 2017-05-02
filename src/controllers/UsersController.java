@@ -13,6 +13,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 import beans.Utilisateur;
 import dao.UtilisateursDao;
 
@@ -43,6 +46,7 @@ public class UsersController {
 		
 		try {
 			users.get(Long.parseLong(id));
+			
 		}catch(RuntimeException e){
 			return Response.status(Response.Status.NOT_FOUND).entity("User not found for UID: " + id).build();
 		}
@@ -75,6 +79,15 @@ public class UsersController {
 			@QueryParam("adresse") String adresse,
 			@QueryParam("cpostal") String cpostal,
 			@QueryParam("ville") String ville){
+		
+		// Echappement des caractères HTML
+		nom = StringUtils.replaceEach(prenom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		prenom = StringUtils.replaceEach(prenom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		mail = StringUtils.replaceEach(mail, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		login = StringUtils.replaceEach(login, new String[]{"&", "<", ">", "\"", "'", "/"},	new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		adresse = StringUtils.replaceEach(adresse, new String[]{"&", "<", ">", "\"", "'", "/"},	new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		cpostal = StringUtils.replaceEach(cpostal, new String[]{"&", "<", ">", "\"", "'", "/"},	new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		ville = StringUtils.replaceEach(ville, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
 		
 		Utilisateur newUser = new Utilisateur(nom, prenom, mail, login, password, adresse, cpostal, ville);
 		users.add(newUser);
