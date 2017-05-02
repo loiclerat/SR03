@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import beans.Commande;
@@ -82,9 +83,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		TypedQuery<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:x and jeu_id=:j ");
-		req.setParameter("c", c.getId());  
-		req.setParameter("j", j.getId());
+		Query<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:c and jeu_id=:j ");
+		req.setFloat("c", c.getId());  
+		req.setFloat("j", j.getId());
 		req.executeUpdate();
 		
 		session.getTransaction().commit();

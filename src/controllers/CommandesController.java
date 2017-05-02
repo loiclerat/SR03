@@ -18,11 +18,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import beans.Commande;
+import beans.Jeu;
 import beans.LigneCommande;
 import beans.TypeConsole;
 import dao.CommandesDAO;
 import dao.JeuxDAO;
 import dao.LigneCommandesDAO;
+import dao.TypeConsoleDAO;
 import dao.UtilisateursDao;
 
 @Path("/commande")
@@ -60,12 +62,14 @@ public class CommandesController {
 	@DELETE
 	@Path("/{idCommande}")
 	@Produces("application/json")
-	public Response deleteCommande(@PathParam("idCommande") String id) {
+	public Response deleteCommande(@PathParam("idCommande") Long id) {
 		if(id == null)
 			return Response.serverError().entity(id).build();
 		
 		try {
-			commandes.delete(Long.parseLong(id));
+			commandes.get(id).getLigneCommandes().clear();
+			commandes.delete(id);
+			
 		}catch(RuntimeException e){
 			return Response.status(Response.Status.NOT_FOUND).entity("Commande not found for UID: " + id).build();
 		}
@@ -137,19 +141,58 @@ public class CommandesController {
 	@Produces("text/plain")
 	public Response createLigne(@PathParam("idCommande") Long idCommande,
 			@QueryParam("idJeu") Long idJeu,
-			@QueryParam("qty") int quantity){
+			@QueryParam("qty") int quantity,
+			@QueryParam("idConsole") Long console_id){
 		
 		Commande c = commandes.get(idCommande);
 		LigneCommandesDAO lignes = new LigneCommandesDAO();
 		JeuxDAO jeux = new JeuxDAO();
-		LigneCommande l = new LigneCommande(c, jeux.get(idJeu), quantity);
+		LigneCommande l = new LigneCommande(c, jeux.get(idJeu), quantity, console_id);
 		
 		lignes.add(l);
-		c.setPrice(getPrix(idCommande));
+		c.updatePrice();
+		commandes.update(c);
 		return Response
 				   .status(200)
 				   .entity("CreateLigne is called, Commande n° : " + idCommande + ", jeu : "+ jeux.get(idJeu).getTitre() 
 						   + ", quantity : " + quantity).build();
+		
+	}
+	
+	@DELETE
+	@Path("/{idCommande}/jeu/{idJeu}")
+	@Produces("text/plain")
+	public Response removeLigne(@PathParam("idCommande") Long id,
+			@PathParam("idJeu") Long idJeu){
+		
+		Commande c = null;
+		
+		try {
+			c = commandes.get(id);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Commande not found for ID : "+ id).build();
+		}
+		
+		Jeu j;
+		JeuxDAO consoles = new JeuxDAO();
+		try {
+			j = consoles.get(idJeu);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Jeu not found for ID : "+ idJeu).build();
+		}
+		c.removeLigne(j.getId());
+		LigneCommandesDAO lignes = new LigneCommandesDAO();
+		lignes.delete(c, j);
+		c.updatePrice();
+		commandes.update(c);
+		
+		return Response
+				   .status(200)
+				   .entity("Jeu "+ j.getTitre().toString() +" retiré a la commande " + c.getId().toString()).build();
 		
 	}
 	
@@ -159,7 +202,7 @@ public class CommandesController {
 		for (Iterator<LigneCommande> i = c.getLigneCommandes().iterator(); i.hasNext();) {
 		    LigneCommande item = i.next();
 		    
-		    price += item.getPrice();
+		    price = price + item.getLinePrice();
 		}
 		return price;
 	}

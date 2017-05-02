@@ -116,4 +116,72 @@ public class JeuxController {
 		
 	}
 	
+	@PUT
+	@Path("/{idGame}/console/{idConsole}")
+	@Produces("text/plain")
+	public Response addConsole(@PathParam("idGame") Long id,
+			@PathParam("idConsole") Long idConsole){
+		
+		Jeu j;
+		
+		try {
+			j = jeux.get(id);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Game not found for ID : "+ id).build();
+		}
+		
+		TypeConsole tc;
+		TypeConsoleDAO consoles = new TypeConsoleDAO();
+		try {
+			tc = consoles.get(idConsole);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Console not found for ID : "+ idConsole).build();
+		}
+		j.addConsole(tc);
+		jeux.update(j);
+		
+		return Response
+				   .status(200)
+				   .entity("Console "+ tc.getNomConsole() +" ajouté au jeu " + j.getTitre()).build();
+		
+	}
+	
+	@DELETE
+	@Path("/{idGame}/console/{idConsole}")
+	@Produces("text/plain")
+	public Response removeConsole(@PathParam("idGame") Long id,
+			@PathParam("idConsole") Long idConsole){
+		
+		Jeu j;
+		
+		try {
+			j = jeux.get(id);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Game not found for ID : "+ id).build();
+		}
+		
+		TypeConsole tc;
+		TypeConsoleDAO consoles = new TypeConsoleDAO();
+		try {
+			tc = consoles.get(idConsole);
+		} catch(RuntimeException e){
+			return Response
+					   .status(404)
+					   .entity("Console not found for ID : "+ idConsole).build();
+		}
+		j.removeConsole(idConsole);
+		jeux.update(j);
+		
+		return Response
+				   .status(200)
+				   .entity("Console "+ tc.getNomConsole() +" retiré au jeu " + j.getTitre()).build();
+		
+	}
+	
 }

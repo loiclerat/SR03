@@ -1,5 +1,6 @@
 package beans;
 
+import java.io.Console;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,6 +75,18 @@ public class Jeu implements Serializable {
 	
 	public void addConsole(TypeConsole c) {
 		this.consoles.add(c);
+	}
+	
+	public void removeConsole(Long idConsole) {
+		int index = 0;
+
+		for (Iterator<TypeConsole> i = this.consoles.iterator(); i.hasNext();) {
+			TypeConsole item = i.next();
+
+			if(item.getId().equals(idConsole))	break;
+		    index++;
+		}
+		consoles.remove(index);
 	}
 
 	
