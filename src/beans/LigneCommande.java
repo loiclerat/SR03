@@ -28,13 +28,17 @@ public class LigneCommande implements Serializable {
 	
 	@Column(name="QUANTITY")
 	private Integer quantity;
+	
+	@Column(name="CONSOLE_ID")
+	private Long console_id;
 
 		
-	public LigneCommande(Commande commande_id, Jeu jeu_id, Integer quantity) {
+	public LigneCommande(Commande commande_id, Jeu jeu_id, Integer quantity, Long console_id) {
 		super();
 		this.commande_id = commande_id;
 		this.jeu_id = jeu_id;
 		this.quantity = quantity;
+		this.console_id = console_id;
 	}
 
 	/**
@@ -86,9 +90,22 @@ public class LigneCommande implements Serializable {
 		this.quantity = quantity;
 	}
 	
-	public Float getPrice(){
-		JeuxDAO jeux = new JeuxDAO();
+	public Float getLinePrice(){
 		return (float)(quantity * jeu_id.getPrix());
+	}
+
+	/**
+	 * @return the console_id
+	 */
+	public Long getConsole_id() {
+		return console_id;
+	}
+
+	/**
+	 * @param console_id the console_id to set
+	 */
+	public void setConsole_id(Long console_id) {
+		this.console_id = console_id;
 	}
 	
 

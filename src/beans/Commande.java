@@ -3,10 +3,14 @@ package beans;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+
+import dao.JeuxDAO;
+import dao.LigneCommandesDAO;
 
 @Entity
 @Table(name="COMMANDE")
@@ -114,5 +118,29 @@ public class Commande implements Serializable {
 		this.ligneCommandes = ligneCommandes;
 	}
 	
+	public void removeLigne(Long idJeu) {
+		int index = 0;
+		LigneCommande item = null;
+		for (Iterator<LigneCommande> i = this.ligneCommandes.iterator(); i.hasNext();) {
+			item = i.next();
+			System.out.println(">> index : "+ index + " Jeu : " + item.getJeu_id().getTitre());
+			if(item.getJeu_id().getId().equals(idJeu)) 
+				break;
+		    index++;
+		}
+		System.out.println(">> index to remove : "+ index);
+		
+		ligneCommandes.remove(index);
+
+		updatePrice();
+	}
+	
+	 public void updatePrice(){
+		 float prix = (float)0;
+		 for(LigneCommande l : ligneCommandes){
+			 prix = prix + l.getLinePrice();
+		 }
+		 this.price = prix;
+	 }
 	
 }

@@ -55,7 +55,6 @@ public class CommandesDAO implements DAOFactory<Commande>{
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		//List<Jeu> jux = session.createQuery("FROM Jeu").list();
 		TypedQuery<Commande> req = session.createQuery("from Commande j where j.titre like :x");
 		req.setParameter("x", "%"+attribute+"%");
 		
@@ -73,7 +72,7 @@ public class CommandesDAO implements DAOFactory<Commande>{
 		//
 		
 		Object j = session.get(Commande.class, idEntity);
-		if(j == null) throw new RuntimeException("Commande introvable");
+		if(j == null) throw new RuntimeException("Commande introuvable");
 		
 		session.delete(j);
 		session.getTransaction().commit();
