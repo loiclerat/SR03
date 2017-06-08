@@ -1,8 +1,10 @@
 package controllers;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -71,17 +73,19 @@ public class UsersController {
 	
 	@POST
 	@Produces("text/plain")
-	public Response createuser(@QueryParam("nom") String nom,
-			@QueryParam("prenom") String prenom,
-			@QueryParam("mail") String mail,
-			@QueryParam("login") String login,
-			@QueryParam("password") String password,
-			@QueryParam("adresse") String adresse,
-			@QueryParam("cpostal") String cpostal,
-			@QueryParam("ville") String ville){
+	public Response createuser(@FormParam("nom") String nom,
+			@FormParam("prenom") String prenom,
+			@FormParam("mail") String mail,
+			@FormParam("login") String login,
+			@FormParam("password") String password,
+			@FormParam("adresse") String adresse,
+			@FormParam("cpostal") String cpostal,
+			@FormParam("ville") String ville){
+		
+		//System.out.println("TEST RECEPTION : " + nom);
 		
 		// Echappement des caractères HTML
-		nom = StringUtils.replaceEach(prenom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		nom = StringUtils.replaceEach(nom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
 		prenom = StringUtils.replaceEach(prenom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
 		mail = StringUtils.replaceEach(mail, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
 		login = StringUtils.replaceEach(login, new String[]{"&", "<", ">", "\"", "'", "/"},	new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
