@@ -95,27 +95,27 @@ function verifForm(myself)
 	var nomOk = verifNom(f.nom);
 	var prenomOk = verifNom(f.prenom);
 	var codepostalOk = verifCodePostal(f.cpostal);
-   	var villeOk = verifNom(f.ville);
-   	var adresseOk = verifNom(f.adresse);
-   	var mailOk = verifMail(f.mail);
-   	var passOk = verifPass(f.password);
+	var villeOk = verifNom(f.ville);
+	var adresseOk = verifNom(f.adresse);
+	var mailOk = verifMail(f.mail);
+	var passOk = verifPass(f.password);
 
    	 	
-   	if(pseudoOk && nomOk && prenomOk && codepostalOk && mailOk && villeOk && adresseOk && passOk && f.password.value === f.password_conf.value)
-   	{
-   		traitementAjax(f);
-      	return true;
-    }
-   	else if (f.password.value !== f.password_conf.value)
+   if(pseudoOk && nomOk && prenomOk && codepostalOk && mailOk && villeOk && adresseOk && passOk && f.password.value === f.password_conf.value)
+   {
+		sendForm(f);
+   	return true;
+   }
+   else if (f.password.value !== f.password_conf.value)
 	{
-      	alert("Les mots de passe de correspondent pas");
-      	return false;
-   	}  
-   	else
-   	{
-      	alert("Veuillez remplir correctement tous les champs");
-      	return false;
-   	}
+   	alert("Les mots de passe de correspondent pas");
+   	return false;
+	}  
+	else
+	{
+   	alert("Veuillez remplir correctement tous les champs");
+   	return false;
+	}
 }
 
 
@@ -143,7 +143,7 @@ function getXhr()
 }
 
 
-function traitementAjax(f)
+function sendForm(f)
 {
 	//Partie Ajax
 	var xhr = getXhr();
@@ -151,6 +151,8 @@ function traitementAjax(f)
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4 && xhr.status == 200){
 			alert("Ajout effectué !!");
+
+         window.location.href = "../index.html";
 		} 
 	}
 
@@ -160,3 +162,5 @@ function traitementAjax(f)
            '&cpostal=' + f.cpostal.value + '&ville=' + f.ville.value + '&login=' + f.login.value + '&password=' + f.password.value);
 	
 }
+
+

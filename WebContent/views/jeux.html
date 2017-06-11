@@ -2,11 +2,27 @@
 <html>
 <head>
     <title>Hello World!</title>
+    <script src="../scripts/cookieManager.js"></script>
 </head>
 
 <body>
+    <h2 id="username">Bonjour </h2>    
+    <script>
+        document.getElementById('username').append(sessionStorage.getItem('username'));
+
+        // Déconnexion
+        function deconnect(){
+            // clear username storage
+            sessionStorage.clear();
+            // delete authentication token
+            eraseCookie('authentication');
+            document.location.href="../index.html";
+        }
+    </script>
+
 
     <h1>Liste des jeux disponibles</h1>
+    <input type="button" value="Deconnexion" onclick="deconnect()">
 
     <table border="1" id="gameTable">
     	<thead>

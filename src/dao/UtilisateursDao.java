@@ -83,13 +83,13 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		session.getTransaction().commit();
 		return (Utilisateur)u;
 	}
+	
 
 	@Override
 	public List<Utilisateur> listByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
-		//List<Jeu> jux = session.createQuery("FROM Jeu").list();
 		List<Utilisateur> users = (List<Utilisateur>) session.createQuery("from Utilisateur u where u.login like :x").setParameter("x", "%"+attribute+"%").list();
 
 		session.getTransaction().commit();

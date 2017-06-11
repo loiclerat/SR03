@@ -1,7 +1,12 @@
 package controllers;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -26,6 +31,7 @@ import dao.UtilisateursDao;
 public class UsersController {
 	
 	private UtilisateursDao users;
+
 	
 	public UsersController(){
 		users = new UtilisateursDao();
@@ -82,7 +88,6 @@ public class UsersController {
 			@FormParam("cpostal") String cpostal,
 			@FormParam("ville") String ville){
 		
-		//System.out.println("TEST RECEPTION : " + nom);
 		
 		// Echappement des caractères HTML
 		nom = StringUtils.replaceEach(nom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
@@ -144,9 +149,55 @@ public class UsersController {
 		
 	}
 	
-	
-	
-	
-	
-	
+	@POST
+	@Path("/authenticate")
+	@Produces("text/plain")
+	public Response connect(@FormParam("login") String login, @FormParam("password") String password){
+		
+		login = StringUtils.replaceEach(login, new String[]{"&", "<", ">", "\"", "'", "/"},	new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});
+		
+		try {
+            if (checkPassword(login, password)){
+            	System.out.println("PASS OK");
+            // Create a token for the client
+            String token = AuthenticationManager.createToken(login);
+
+            // Return the token on the response
+            return Response.ok(token).build();
+            }
+            else{
+            	return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }		
+	}
+
+	private boolean checkPassword(String login, String password) {		
+		ConfigurablePasswordEncryptor encryptor = new ConfigurablePasswordEncryptor();
+		encryptor.setAlgorithm("SHA-256");
+		
+		Utilisateur u;
+		try {
+			u = getUserByLogin(login);
+		} catch(RuntimeException e){
+			return false;
+		}
+		
+		if (encryptor.checkPassword(password, u.getPassword()))
+			return true;
+		else
+			return false;
+	}
+
+	private Utilisateur getUserByLogin(String login) {
+		List<Utilisateur> listUsers = users.list();
+		for (int i=0 ; i<listUsers.size() ; i++){
+			if (listUsers.get(i).getLogin().matches(login)){
+				return listUsers.get(i);
+			}
+		}
+		return null;
+	}	
 }
