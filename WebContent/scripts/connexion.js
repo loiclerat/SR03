@@ -1,11 +1,13 @@
 
-function verifForm(myself)
+function verifConnectForm(myself)
 {
 	var f = myself.form;
 
-	//var pseudoOk = verifLogin(f.login);
+	if (f.login.value == '' || f.password.value == '')
+		alert('Veulliez renseigner tous les champs');
+	else
+ 		traitementAjax(f);
  	
-	traitementAjax(f);
    return true;
 }
 
@@ -40,16 +42,21 @@ function traitementAjax(f)
 	var xhr = getXhr();
 
 	xhr.onreadystatechange = function(){
-		if(xhr.readyState == 4 && xhr.status == 200){
+		if(xhr.readyState == 4){
+			if (xhr.status == 200){
 			console.log("token received");
 			
 			createCookie('authentication',xhr.responseText,5);
 			sessionStorage.setItem('username', f.login.value);
-			document.location.href="jeux.html";
-		} 
+			document.location.href="views/jeux.html";
+			} 
+			else if (xhr.status == 401){
+				alert('Le login et le mot de passe ne correspondent pas');
+			}
+		}
 	}
 
-	xhr.open("POST","../api/users/authenticate",true);
+	xhr.open("POST","api/users/authenticate",true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 	xhr.send('login=' + f.login.value + '&password=' + f.password.value);
 	

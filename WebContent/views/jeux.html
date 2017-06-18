@@ -1,18 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="en">
 <head>
     <title>Vente de jeux vidéos</title>
 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <script src="../scripts/cookieManager.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../css/menu.css">
+    <!--<link rel="stylesheet" type="text/css" href="../css/menu.css">-->
+    <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/jeux.css">
 </head>
 
 <body>
-    <h2 id="username">Bonjour </h2>    
-    <script>
-        document.getElementById('username').append(sessionStorage.getItem('username'));
+    <!-- Start Top Bar -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text" id='username'>Bonjour </li>
+        </ul>
+      </div>
 
+      <script>
+        document.getElementById('username').append(sessionStorage.getItem('username'));
         // Déconnexion
         function deconnect(){
             // clear username storage
@@ -21,41 +32,60 @@
             eraseCookie('authentication');
             document.location.href="../index.html";
         }
-    </script>
+        </script>
+
+      <div class="top-bar-right">
+        <ul class="menu">
+          <li><input class="button expanded" type="button" value="Deconnexion" onclick="deconnect()"></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- End Top Bar --> 
+    
+
+    <hr>
+    <div class="row">
+
+        <!-- PANIER -->
+
+        <div class="column medium-4 large-4 align-center">
+
+        <h2>Panier</h2>
+
+        
+
+        <table border="1" id="cartTable">
+            <tbody>
+                <!-- Contenu ajouté en JS -->
+            </tbody>
+        </table>
+
+        <p id="price">Prix total : </p>
+        <input type="button" class="button expanded" value="Commander !" onclick="validateCart()"/>
+        </div>
 
 
-    <h1>Liste des jeux disponibles</h1>
-    <input type="button" value="Deconnexion" onclick="deconnect()">
+        <!-- LISTE JEUX -->
+
+        <div class="column medium-7 large-7 align-center">
+
+        <h2>Jeux disponibles</h2>
+
+        <table border="1" id="gameTable">
+        	<thead>
+        		<tr><td></td><td>Titre</td><td>Prix (€)</td><td>Console</td><td>Quantité</td></tr>
+        	</thead>
+        	<tbody>
+                <!-- Contenu ajouté en JS -->
+        	</tbody>
+        </table>
+
+        </div>
+    </div>
 
 
-    <!-- PANIER -->
-
-    <ul id="menu">
-        <li>
-            <a href="#">Panier</a>
-            <ul>
-                <li>
-                    <table border="1" id="cartTable">
-                        <tbody>
-                            <!-- Contenu ajouté en JS -->
-                        </tbody>
-                    </table>
-                </li>
-            </ul>
-        </li>        
-    </ul>
-
-    <!--  -->
-
-
-    <table border="1" id="gameTable">
-    	<thead>
-    		<tr><td></td><td>Titre</td><td>Prix (€)</td><td>Console</td><td>Quantité</td></tr>
-    	</thead>
-    	<tbody>
-            <!-- Contenu ajouté en JS -->
-    	</tbody>
-    </table>
+</hr>
 
     <script src="../scripts/listeJeux.js"></script>
 

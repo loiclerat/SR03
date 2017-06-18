@@ -88,6 +88,8 @@ public class UsersController {
 			@FormParam("cpostal") String cpostal,
 			@FormParam("ville") String ville){
 		
+		if (getUserByLogin(login) != null)
+			return Response.status(Response.Status.UNAUTHORIZED).build();
 		
 		// Echappement des caractères HTML
 		nom = StringUtils.replaceEach(nom, new String[]{"&", "<", ">", "\"", "'", "/"}, new String[]{"&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;"});

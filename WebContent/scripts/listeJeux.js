@@ -95,6 +95,8 @@ function addRow(titre, prix, image, consoles, id)
 		var addtocart = document.createElement("input");
 		addtocart.setAttribute('type', 'button');
 		addtocart.setAttribute('value', 'Add');
+		addtocart.setAttribute('class', 'button expanded');
+		addtocart.setAttribute('style', 'background-color:#00cc00');
 		addtocart.setAttribute('arg1', titre);
 
 		addtocart.addEventListener('click', function addToCart(){
@@ -103,10 +105,19 @@ function addRow(titre, prix, image, consoles, id)
 				var xhr = getXhr();
 
 				xhr.onreadystatechange = function(){
-					if(xhr.readyState == 4 && xhr.status == 200){
-						alert("Ajout effectué");
+					if(xhr.readyState == 4){
+						if(xhr.status == 200){
+							getPanier();
+						}
+						else if (xhr.status == 401){
+							alert("La session a expiré");
 
-						getPanier();
+							// clear username storage
+				            sessionStorage.clear();
+				            // delete authentication token
+				            eraseCookie('authentication');
+				            document.location.href="../index.html";
+						}
 					}
 				}
 
@@ -165,75 +176,54 @@ function getPanier()
 	var xhr = getXhr();
 
 	xhr.onreadystatechange = function(){
-		if(xhr.readyState == 4 && xhr.status == 200){
+		if(xhr.readyState == 4){
+			if (xhr.status == 401){
+				alert("La session a expiré");
 
-			// Si le tableau est déjà rempli, on nettoie
-			var parent =document.getElementById("cartTable");
-			var child =document.getElementById("cartTable").getElementsByTagName('tbody').item(0);
-			if (child)
-				parent.removeChild(child);
-
-			var newBody = document.createElement("tbody");
-			parent.appendChild(newBody);
-
-			resultat = xhr.responseText;
-			
-			// Populate oanier
-			var jsonResult = JSON.parse(resultat);
-			var lignes = jsonResult.ligneCommandes;
-			
-			// Populate table
-			for (var i=0 ; i<lignes.length ; i++)
-			{	
-				var game = lignes[i].jeu_id;
-				var consoles = game.consoles;
-				var consoleName = "";
-
-				// Recherche du nom de la console
-				for (var j=0 ; j<consoles.length ; j++)
-				{
-					if (consoles[j].id === lignes[i].console_id)
-						consoleName = consoles[j].nomConsole;
-				}
-
-				addCartRow(game.titre, lignes[i].linePrice, game.url_image, consoleName, game.id, lignes[i].quantity, lignes[i].console_id);
+				// clear username storage
+	            sessionStorage.clear();
+	            // delete authentication token
+	            eraseCookie('authentication');
+	            document.location.href="../index.html";
 			}
+			else if (xhr.status == 200){
 
-			// Ajout du prix total
-			var cartTable=document.getElementById("cartTable").getElementsByTagName('tbody').item(0);
-		    var row=document.createElement("tr");
-		    var cell1=document.createElement("td");
-		    var cell2=document.createElement("td");
+				// Si le tableau est déjà rempli, on nettoie
+				var parent =document.getElementById("cartTable");
+				var child =document.getElementById("cartTable").getElementsByTagName('tbody').item(0);
+				if (child)
+					parent.removeChild(child);
 
-		    var price=document.createTextNode("Prix total : "+jsonResult.price);
-		    var valider=document.createElement("input");
-		    valider.setAttribute('type', 'button');
-			valider.setAttribute('value', 'Commander');
+				var newBody = document.createElement("tbody");
+				parent.appendChild(newBody);
 
-			valider.addEventListener('click', function validateCart(){
-					
-					//Partie Ajax
-					var xhr = getXhr();
+				resultat = xhr.responseText;
+				
+				// Populate oanier
+				var jsonResult = JSON.parse(resultat);
+				var lignes = jsonResult.ligneCommandes;
+				
+				// Populate table
+				for (var i=0 ; i<lignes.length ; i++)
+				{	
+					var game = lignes[i].jeu_id;
+					var consoles = game.consoles;
+					var consoleName = "";
 
-					xhr.onreadystatechange = function(){
-						if(xhr.readyState == 4 && xhr.status == 200){
-							alert("Commande validée !");
-
-							getPanier();
-						}
+					// Recherche du nom de la console
+					for (var j=0 ; j<consoles.length ; j++)
+					{
+						if (consoles[j].id === lignes[i].console_id)
+							consoleName = consoles[j].nomConsole;
 					}
 
-					xhr.open("GET","http://localhost:8080/SR03/api/commande/validateCurrent/"+login,true);
-					xhr.setRequestHeader("Authorization", readCookie("authentication"));
-					xhr.send(null);
+					addCartRow(game.titre, lignes[i].linePrice, game.url_image, consoleName, game.id, lignes[i].quantity, lignes[i].console_id);
+				}
 
-				});
-
-			cell1.appendChild(price);
-			cell2.appendChild(valider);
-		    row.appendChild(cell1);
-		    row.appendChild(cell2);
-        	cartTable.appendChild(row);
+				// Ajout du prix total
+				var price=document.getElementById("price");
+				price.innerHTML = "Prix total : " + jsonResult.price +" €";
+	        }
 		} 
 	}
 
@@ -260,7 +250,7 @@ function addCartRow(titre, prix, image, consoleName, idJeu, qte, idConsole)
 
 	    // Titre et prix
      	title=document.createTextNode(titre);
-     	lineprice=document.createTextNode(prix+" €");
+     	lineprice=document.createTextNode(prix+"€");
 
      	// Image
         var imagenode = document.createElement("img");
@@ -279,6 +269,8 @@ function addCartRow(titre, prix, image, consoleName, idJeu, qte, idConsole)
 		removeFromCart.setAttribute('type', 'button');
 		removeFromCart.setAttribute('value', 'Remove');
 		removeFromCart.setAttribute('arg1', titre);
+		removeFromCart.setAttribute('class', 'button expanded');
+		removeFromCart.setAttribute('style', 'background-color:#cc0000');
 
 		removeFromCart.addEventListener('click', function removeFromCart(){
 				
@@ -286,9 +278,19 @@ function addCartRow(titre, prix, image, consoleName, idJeu, qte, idConsole)
 				var xhr = getXhr();
 
 				xhr.onreadystatechange = function(){
-					if(xhr.readyState == 4 && xhr.status == 200){
-						// Refresh panier
-						getPanier();
+					if(xhr.readyState == 4){
+						if(xhr.status == 200){
+							getPanier();
+						}
+						else if (xhr.status == 401){
+							alert("La session a expiré");
+
+							// clear username storage
+				            sessionStorage.clear();
+				            // delete authentication token
+				            eraseCookie('authentication');
+				            document.location.href="../index.html";
+						}
 					}
 				}
 
@@ -315,5 +317,39 @@ function addCartRow(titre, prix, image, consoleName, idJeu, qte, idConsole)
         row.appendChild(cell6);
         cartTable.appendChild(row);
 }
+
+
+function validateCart(){
+						
+	//Partie Ajax
+	var xhr = getXhr();
+	var login = sessionStorage.getItem('username');
+
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+			alert("Commande validée !");
+
+			getPanier();
+			}
+			else if (xhr.status == 401){
+				alert("La session a expiré");
+
+				// clear username storage
+	            sessionStorage.clear();
+	            // delete authentication token
+	            eraseCookie('authentication');
+	            document.location.href="../index.html";
+			}
+		}
+	}
+
+	xhr.open("GET","http://localhost:8080/SR03/api/commande/validateCurrent/"+login,true);
+	xhr.setRequestHeader("Authorization", readCookie("authentication"));
+	xhr.send(null);
+
+};
+
+
 
 // ==============================================================================================

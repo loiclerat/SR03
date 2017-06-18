@@ -4,7 +4,7 @@ function surligne(champ, erreur)
    if(erreur)
       champ.style.backgroundColor = "#fba";
    else
-      champ.style.backgroundColor = "#afb";
+      champ.style.backgroundColor = "#fff";
 }
 
 function verifLogin(champ)
@@ -87,7 +87,7 @@ function verifPass(champ)
    }
 }
 
-function verifForm(myself)
+function verifIncriptionForm(myself)
 {
 	var f = myself.form;
 
@@ -149,14 +149,20 @@ function sendForm(f)
 	var xhr = getXhr();
 
 	xhr.onreadystatechange = function(){
-		if(xhr.readyState == 4 && xhr.status == 200){
+		if(xhr.readyState == 4){
+         if (xhr.status == 200){
 			alert("Ajout effectué !!");
 
-         window.location.href = "../index.html";
-		} 
+         window.location.href = "index.html";
+		   } 
+         else if (xhr.status == 401){
+            alert("Ce login est déjà utilisé");
+            surligne(f.login, true);
+         }
+      }
 	}
 
-	xhr.open("POST","../api/users",true);
+	xhr.open("POST","api/users",true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 	xhr.send('nom=' + f.nom.value + '&prenom=' + f.prenom.value + '&mail=' + f.mail.value + '&adresse=' + f.adresse.value + 
            '&cpostal=' + f.cpostal.value + '&ville=' + f.ville.value + '&login=' + f.login.value + '&password=' + f.password.value);
