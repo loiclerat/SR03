@@ -19,7 +19,7 @@ public class Commande implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="COMMANDE_ID")
-	private Long id;
+	public Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="USER_ID")
@@ -31,11 +31,15 @@ public class Commande implements Serializable {
 	@Column(name="COMMANDE_DATE")
 	private Date dateCommande;
 	
+	@Column(name="COMMANDE_STATUS")
+	private String statusCommande;
+	
 	@OneToMany(mappedBy = "commande_id", cascade = CascadeType.ALL)
 	private List<LigneCommande> ligneCommandes = new ArrayList<LigneCommande>();
 
 	public Commande(){
 		super();
+		statusCommande = "En cours";
 	}
 	
 	public Commande(Utilisateur user, Float price, Date dateCommande) {
@@ -43,6 +47,7 @@ public class Commande implements Serializable {
 		this.user = user;
 		this.price = price;
 		this.dateCommande = dateCommande;
+		statusCommande = "En cours";
 	}
 
 	/**
@@ -115,20 +120,19 @@ public class Commande implements Serializable {
 	 * @param ligneCommandes the ligneCommandes to set
 	 */
 	public void setLigneCommandes(List<LigneCommande> ligneCommandes) {
-		this.ligneCommandes = ligneCommandes;
+		this.ligneCommandes = ligneCommandes;		
 	}
 	
-	public void removeLigne(Long idJeu) {
+	public void removeLigne(Long idJeu, Long idConsole) {
 		int index = 0;
 		LigneCommande item = null;
 		for (Iterator<LigneCommande> i = this.ligneCommandes.iterator(); i.hasNext();) {
 			item = i.next();
-			System.out.println(">> index : "+ index + " Jeu : " + item.getJeu_id().getTitre());
 			if(item.getJeu_id().getId().equals(idJeu)) 
-				break;
+				if(item.getConsole_id().equals(idConsole))
+					break;
 		    index++;
 		}
-		System.out.println(">> index to remove : "+ index);
 		
 		ligneCommandes.remove(index);
 
@@ -137,10 +141,25 @@ public class Commande implements Serializable {
 	
 	 public void updatePrice(){
 		 float prix = (float)0;
+
 		 for(LigneCommande l : ligneCommandes){
 			 prix = prix + l.getLinePrice();
 		 }
 		 this.price = prix;
 	 }
+
+	/**
+	 * @return the statusCommande
+	 */
+	public String getStatusCommande() {
+		return statusCommande;
+	}
+
+	/**
+	 * @param statusCommande the statusCommande to set
+	 */
+	public void setStatusCommande(String statusCommande) {
+		this.statusCommande = statusCommande;
+	}
 	
 }

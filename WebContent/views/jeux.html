@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello World!</title>
+    <title>Vente de jeux vidéos</title>
+
     <script src="../scripts/cookieManager.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../css/menu.css">
 </head>
 
 <body>
@@ -24,11 +27,33 @@
     <h1>Liste des jeux disponibles</h1>
     <input type="button" value="Deconnexion" onclick="deconnect()">
 
+
+    <!-- PANIER -->
+
+    <ul id="menu">
+        <li>
+            <a href="#">Panier</a>
+            <ul>
+                <li>
+                    <table border="1" id="cartTable">
+                        <tbody>
+                            <!-- Contenu ajouté en JS -->
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
+        </li>        
+    </ul>
+
+    <!--  -->
+
+
     <table border="1" id="gameTable">
     	<thead>
     		<tr><td></td><td>Titre</td><td>Prix (€)</td><td>Console</td><td>Quantité</td></tr>
     	</thead>
     	<tbody>
+            <!-- Contenu ajouté en JS -->
     	</tbody>
     </table>
 

@@ -29,6 +29,7 @@ public class LigneCommande implements Serializable {
 	@Column(name="QUANTITY")
 	private Integer quantity;
 	
+	@Id
 	@Column(name="CONSOLE_ID")
 	private Long console_id;
 

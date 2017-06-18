@@ -5,8 +5,10 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 
 import beans.Commande;
+import beans.Utilisateur;
 import services.SessionFactoryUtil;
 
 public class CommandesDAO implements DAOFactory<Commande>{
@@ -30,12 +32,13 @@ public class CommandesDAO implements DAOFactory<Commande>{
 
 	@Override
 	public List<Commande> list() {
+		
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		
 		TypedQuery<Commande> req = session.createQuery("select c from Commande c");
+
 		List<Commande> commandes = req.getResultList();
-		
+
 		session.getTransaction().commit();
 		return commandes;
 	}
@@ -48,6 +51,21 @@ public class CommandesDAO implements DAOFactory<Commande>{
 		if(j == null) throw new RuntimeException("Commande introvable");
 		session.getTransaction().commit();
 		return (Commande)j;
+	}
+	
+	public Commande getCurrent(Long idUser) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		String sql = "SELECT * FROM COMMANDE WHERE USER_ID = "+ idUser.toString() +" AND COMMANDE_STATUS = 'En Cours'";
+		NativeQuery query = session.createSQLQuery(sql);
+		query.addEntity(Commande.class);
+		List results = query.list();
+		if (!results.isEmpty()) {
+			return (Commande) results.get(0);
+		}
+		session.getTransaction().commit();
+		return (Commande)null;
 	}
 
 	@Override
@@ -82,7 +100,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	@Override
 	public void update(Commande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		session.update(e);
 		session.getTransaction().commit();

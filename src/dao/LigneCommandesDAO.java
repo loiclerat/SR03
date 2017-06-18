@@ -9,10 +9,12 @@ import javax.persistence.TypedQuery;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 
 import beans.Commande;
 import beans.Jeu;
 import beans.LigneCommande;
+import beans.TypeConsole;
 
 public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 
@@ -39,18 +41,34 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 		return panier;
 	}
 
-	public LigneCommande get(Commande idCommande, Jeu idJeu) {
+	public LigneCommande get(Commande idCommande, Jeu idJeu, Long idConsole) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		TypedQuery<LigneCommande> req = session.createQuery("select lc from LigneCommande lc where lc.commande_id=:c and lc.jeu_id=:j ");
+		TypedQuery<LigneCommande> req = session.createQuery("select lc from LigneCommande lc where lc.commande_id=:c and lc.jeu_id=:j and lc.console_id=:s");
 		req.setParameter("c", idCommande.getId());  
 		req.setParameter("j", idJeu.getId());
+		req.setParameter("s", idConsole);
 		LigneCommande ligne = req.getSingleResult();
 		
 		if(ligne == null) throw new RuntimeException("LigneCommande introuvable");
 		session.getTransaction().commit();
 		return ligne;
+	}
+	
+	public int get(Commande idCommande, Jeu idJeu, String cons) {
+		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		TypedQuery<LigneCommande> req = session.createQuery("select lc from LigneCommande lc where lc.commande_id=:c and lc.jeu_id=:j and console_id=:x");
+		req.setParameter("c", idCommande.getId());  
+		req.setParameter("j", idJeu.getId());
+		req.setParameter("x", cons);
+		LigneCommande ligne = req.getSingleResult();
+		
+		if(ligne == null) //throw new RuntimeException("LigneCommande introuvable");
+			return -2;
+		else return ligne.getQuantity();
 	}
 
 	@Override
@@ -79,15 +97,28 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 		
 	}
 	
-	public void delete(Commande c, Jeu j){
+	public void delete(Commande c, Jeu j, TypeConsole console){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		Query<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:c and jeu_id=:j ");
-		req.setFloat("c", c.getId());  
-		req.setFloat("j", j.getId());
+		
+		String sql = "DELETE FROM LIGNECOMMANDE WHERE JEU_ID = "+ j.getId().toString() +" AND COMMANDE_ID = "+ c.getId().toString() +" AND CONSOLE_ID = "+ console.getId().toString();
+		NativeQuery query = session.createSQLQuery(sql);
+		query.executeUpdate();
+		
+		/*
+		TypedQuery<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:c and jeu_id=:j and console_id=:p ");
+		req.setParameter("c", c.getId());  
+		req.setParameter("j", j.getId().toString());
+		req.setParameter("p", console.getId());
 		req.executeUpdate();
 		
+		LigneCommande l = new LigneCommande();
+		l.setCommande_id(c);
+		l.setConsole_id(console.getId());
+		l.setJeu_id(j);
+		session.delete(get(c, j, console.toString()));
+		*/
 		session.getTransaction().commit();
 	}
 	
@@ -97,17 +128,6 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 		
 		TypedQuery<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:x ");
 		req.setParameter("c", c.getId());  
-		req.executeUpdate();
-		
-		session.getTransaction().commit();
-	}
-	
-	public void deleteByJeu(Jeu j){
-		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		
-		TypedQuery<LigneCommande> req = session.createQuery("delete from LigneCommande where jeu_id=:x ");
-		req.setParameter("j", j.getId());  
 		req.executeUpdate();
 		
 		session.getTransaction().commit();

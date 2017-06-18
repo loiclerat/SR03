@@ -24,6 +24,7 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 		int nbUsers = session.createQuery("from Utilisateur u").list().size();
 
 		session.getTransaction().commit();
+		
 		return nbUsers;
 	}
 

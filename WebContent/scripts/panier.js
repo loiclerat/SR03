@@ -43,9 +43,10 @@ function getXhr()
 
 } )();
 
-// Crée une ligne dans le tableau 
-function addRow(/** **/)
-{
-	   
-	   /** **/
-}
+
+// =====================
+
+// Récupérer contenu du panier
+// Valider panier
+// Ajouter au panier
+// Supprimer du panier

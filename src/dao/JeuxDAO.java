@@ -42,7 +42,9 @@ public class JeuxDAO implements DAOFactory<Jeu> {
 	@Override
 	public Jeu get(Long idEntity) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		Object j = session.get(Jeu.class, idEntity);
 		if(j == null) throw new RuntimeException("Jeu introvable");
 		session.getTransaction().commit();

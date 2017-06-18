@@ -41,13 +41,14 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 
 	@Override
 	public List<TypeConsole> list() {
-		
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
+
 		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc");
 		List<TypeConsole> consoles = req.getResultList();
-		
+
 		session.getTransaction().commit();
 		return consoles;
 	}
@@ -55,7 +56,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	@Override
 	public TypeConsole get(Long idEntity) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		Object tc = session.get(TypeConsole.class, idEntity);
 		if(tc == null) throw new RuntimeException("Console introuvable");

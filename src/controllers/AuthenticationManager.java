@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.ws.rs.NotAuthorizedException;
 import javax.xml.bind.DatatypeConverter;
 
 import io.jsonwebtoken.Claims;
@@ -46,6 +47,11 @@ public class AuthenticationManager {
 	
 	public static boolean checkToken(String token){
 		try{
+			// Check if the HTTP Authorization header is present and formatted correctly 
+	        if (token == null) {
+	            throw new NotAuthorizedException("Authorization header must be provided");
+	        }
+	        
 			//This line will throw an exception if it is not a signed JWS (as expected)
 		    Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 		    
