@@ -19,7 +19,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 
 	public static int countUsers(){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		int nbUsers = session.createQuery("from Utilisateur u").list().size();
 
@@ -31,7 +33,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	@Override
 	public void add(Utilisateur e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		//try {
 			session.save(e);
@@ -47,7 +51,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 
 	public void add(String nom, String prenom, String mail, String login, String password, String adresse, String cpostal, String ville) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		Utilisateur e = new Utilisateur(nom, prenom, mail, login, password, adresse, cpostal, ville);
 		//try {
@@ -64,7 +70,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	@Override
 	public List<Utilisateur> list() {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		TypedQuery<Utilisateur> req = session.createQuery("from Utilisateur u");
 		List<Utilisateur> users = req.getResultList();
@@ -76,7 +84,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	@Override
 	public Utilisateur get(Long idEntity) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		Object u = session.get(Utilisateur.class, idEntity);
 		if(u == null) throw new RuntimeException("Utilisateur introuvable");
@@ -89,7 +99,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	@Override
 	public List<Utilisateur> listByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		List<Utilisateur> users = (List<Utilisateur>) session.createQuery("from Utilisateur u where u.login like :x").setParameter("x", "%"+attribute+"%").list();
 
@@ -101,8 +113,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	public void delete(Long idEntity) {
 		// Sera remplacé par EJB
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		//
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		Object u = session.get(Utilisateur.class, idEntity);
 		if(u == null) throw new RuntimeException("Utilisateur introvable");
@@ -115,7 +128,9 @@ public class UtilisateursDao implements DAOFactory<Utilisateur>{
 	@Override
 	public void update(Utilisateur e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 
 		session.update(e);
 		session.getTransaction().commit();

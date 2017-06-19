@@ -14,7 +14,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	public static int countTypeConsole(){
 		
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc");
 		int nbConsoles = req.getResultList().size();
@@ -27,7 +29,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	@Override
 	public void add(TypeConsole e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		//try {
 			session.save(e);
 		/*} catch (Exception e1) {
@@ -70,7 +74,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	@Override
 	public List<TypeConsole> listByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole like :x");
 		req.setParameter("x", "%"+attribute+"%");
@@ -83,7 +89,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	
 	public TypeConsole getByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<TypeConsole> req = session.createQuery("from TypeConsole tc where tc.nomConsole = :x");
 		req.setParameter("x", attribute);
@@ -98,8 +106,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	public void delete(Long idEntity) {
 		// Sera remplacé par EJB
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		//
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		Object tc = session.get(TypeConsole.class, idEntity);
 		if(tc == null) throw new RuntimeException("Console introuvable");
@@ -112,7 +121,9 @@ public class TypeConsoleDAO implements DAOFactory<TypeConsole> {
 	@Override
 	public void update(TypeConsole e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		session.update(e);
 		session.getTransaction().commit();

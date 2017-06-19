@@ -19,7 +19,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	@Override
 	public void add(Commande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		//try {
 			session.save(e);
 		/*} catch (Exception e1) {
@@ -34,7 +36,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	public List<Commande> list() {
 		
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		TypedQuery<Commande> req = session.createQuery("select c from Commande c");
 
 		List<Commande> commandes = req.getResultList();
@@ -46,7 +50,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	@Override
 	public Commande get(Long idEntity) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		Object j = session.get(Commande.class, idEntity);
 		if(j == null) throw new RuntimeException("Commande introvable");
 		session.getTransaction().commit();
@@ -55,7 +61,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	
 	public Commande getCurrent(Long idUser) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		String sql = "SELECT * FROM COMMANDE WHERE USER_ID = "+ idUser.toString() +" AND COMMANDE_STATUS = 'En Cours'";
 		NativeQuery query = session.createSQLQuery(sql);
@@ -71,7 +79,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	@Override
 	public List<Commande> listByAttribute(String attribute) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<Commande> req = session.createQuery("from Commande j where j.titre like :x");
 		req.setParameter("x", "%"+attribute+"%");
@@ -86,8 +96,9 @@ public class CommandesDAO implements DAOFactory<Commande>{
 	public void delete(Long idEntity) {
 		// Sera remplacé par EJB
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		//
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		Object j = session.get(Commande.class, idEntity);
 		if(j == null) throw new RuntimeException("Commande introuvable");

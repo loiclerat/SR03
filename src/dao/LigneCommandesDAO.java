@@ -21,7 +21,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	@Override
 	public void add(LigneCommande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		session.save(e);
 		
@@ -43,7 +45,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 
 	public LigneCommande get(Commande idCommande, Jeu idJeu, Long idConsole) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<LigneCommande> req = session.createQuery("select lc from LigneCommande lc where lc.commande_id=:c and lc.jeu_id=:j and lc.console_id=:s");
 		req.setParameter("c", idCommande.getId());  
@@ -58,7 +62,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	
 	public int get(Commande idCommande, Jeu idJeu, String cons) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<LigneCommande> req = session.createQuery("select lc from LigneCommande lc where lc.commande_id=:c and lc.jeu_id=:j and console_id=:x");
 		req.setParameter("c", idCommande.getId());  
@@ -79,7 +85,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	
 	public List<LigneCommande> listByCommandeID(Commande c){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<LigneCommande> req = session.createQuery("from LigneCommande lc where lc.commande_id =:x");
 		req.setParameter("x", c);
@@ -99,7 +107,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	
 	public void delete(Commande c, Jeu j, TypeConsole console){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		
 		String sql = "DELETE FROM LIGNECOMMANDE WHERE JEU_ID = "+ j.getId().toString() +" AND COMMANDE_ID = "+ c.getId().toString() +" AND CONSOLE_ID = "+ console.getId().toString();
@@ -124,7 +134,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	
 	public void deleteByCommande(Commande c){
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		TypedQuery<LigneCommande> req = session.createQuery("delete from LigneCommande where commande_id=:x ");
 		req.setParameter("c", c.getId());  
@@ -136,7 +148,9 @@ public class LigneCommandesDAO implements DAOFactory<LigneCommande>{
 	@Override
 	public void update(LigneCommande e) {
 		Session session = SessionFactoryUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		if (!session.getTransaction().isActive()){
+			session.beginTransaction();
+		}
 		
 		session.update(e);
 		session.getTransaction().commit();

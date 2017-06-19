@@ -188,14 +188,9 @@ function getPanier()
 			}
 			else if (xhr.status == 200){
 
-				// Si le tableau est déjà rempli, on nettoie
-				var parent =document.getElementById("cartTable");
-				var child =document.getElementById("cartTable").getElementsByTagName('tbody').item(0);
-				if (child)
-					parent.removeChild(child);
-
-				var newBody = document.createElement("tbody");
-				parent.appendChild(newBody);
+				// Si le panier est déjà rempli, on nettoie
+				var content =document.getElementById("content");
+				content.innerHTML = "";
 
 				resultat = xhr.responseText;
 				
@@ -204,7 +199,8 @@ function getPanier()
 				var lignes = jsonResult.ligneCommandes;
 				
 				// Populate table
-				for (var i=0 ; i<lignes.length ; i++)
+				var i = 0;
+				for (i=0 ; i<lignes.length ; i++)
 				{	
 					var game = lignes[i].jeu_id;
 					var consoles = game.consoles;
@@ -220,9 +216,11 @@ function getPanier()
 					addCartRow(game.titre, lignes[i].linePrice, game.url_image, consoleName, game.id, lignes[i].quantity, lignes[i].console_id);
 				}
 
+				document.getElementById('nbItems').innerHTML = i+' Items';
+
 				// Ajout du prix total
 				var price=document.getElementById("price");
-				price.innerHTML = "Prix total : " + jsonResult.price +" €";
+				price.innerHTML = jsonResult.price +" €";
 	        }
 		} 
 	}
@@ -238,84 +236,98 @@ function getPanier()
 // Crée une ligne dans le panier 
 function addCartRow(titre, prix, image, consoleName, idJeu, qte, idConsole)
 {
-	    cartTable=document.getElementById("cartTable").getElementsByTagName('tbody').item(0);
-	    row=document.createElement("tr");
+	    var content=document.getElementById("content");
+	    var newRow = document.createElement("div");
+	    newRow.setAttribute("class", "checkout-summary-item");
 
-	    cell1 = document.createElement("td");
-	    cell2 = document.createElement("td");
-	    cell3 = document.createElement("td");
-	    cell4 = document.createElement("td");
-	    cell5 = document.createElement("td");
-	    cell6 = document.createElement("td");
 
-	    // Titre et prix
-     	title=document.createTextNode(titre);
-     	lineprice=document.createTextNode(prix+"€");
+	    // Image
 
-     	// Image
-        var imagenode = document.createElement("img");
-		imagenode.setAttribute('src', image);
-		imagenode.setAttribute('height', '50px');
-		imagenode.setAttribute('width', '50px');
+	        var imagenode = document.createElement("img");
+			imagenode.setAttribute('src', image);
+			imagenode.style.height = '70px';
+			imagenode.style.width = 'auto';
 
-		// Console
-		var consolenode = document.createTextNode(consoleName);
 
-		// Quantité
-		var quantity = document.createTextNode("x"+qte);
+		// Infos 
 
-		// Ajout au panier
-		var removeFromCart = document.createElement("input");
-		removeFromCart.setAttribute('type', 'button');
-		removeFromCart.setAttribute('value', 'Remove');
-		removeFromCart.setAttribute('arg1', titre);
-		removeFromCart.setAttribute('class', 'button expanded');
-		removeFromCart.setAttribute('style', 'background-color:#cc0000');
+		var infos = document.createElement("div");
+		infos.setAttribute("class", "item-name");
 
-		removeFromCart.addEventListener('click', function removeFromCart(){
-				
-				//Partie Ajax
-				var xhr = getXhr();
+			// Titre
+			var title = document.createElement("a");
+			title.innerHTML = titre;
 
-				xhr.onreadystatechange = function(){
-					if(xhr.readyState == 4){
-						if(xhr.status == 200){
-							getPanier();
-						}
-						else if (xhr.status == 401){
-							alert("La session a expiré");
+			// Console
+			var consolenode = document.createElement("p");
+			var consolespan = document.createElement("class", "title");
+			consolespan.innerHTML = "Console : ";
+			consolenode.appendChild(consolespan);
+			var consoletext = document.createTextNode(consoleName);
+			consolenode.appendChild(consoletext);
 
-							// clear username storage
-				            sessionStorage.clear();
-				            // delete authentication token
-				            eraseCookie('authentication');
-				            document.location.href="../index.html";
+			// Quantité
+			var quantitynode = document.createElement("p");
+			var quantityspan = document.createElement("class", "title");
+			quantityspan.innerHTML = "Quantité : ";
+			quantitynode.appendChild(quantityspan);
+			var quantitytext = document.createTextNode(qte);
+			quantitynode.appendChild(quantitytext);
+
+		infos.appendChild(consolenode);
+		infos.appendChild(quantitynode);
+
+
+		// Prix + remove
+
+		var infos2 = document.createElement("div");
+		infos2.setAttribute("class", "item-price");
+     		
+     		// Prix
+     		var price = document.createElement("p");
+     		price.setAttribute("class", "title");
+     		price.innerHTML = prix+" €";
+
+			// Remove
+			var removeFromCart = document.createElement("a");
+			removeFromCart.addEventListener('click', function removeFromCart(){
+					
+					//Partie Ajax
+					var xhr = getXhr();
+
+					xhr.onreadystatechange = function(){
+						if(xhr.readyState == 4){
+							if(xhr.status == 200){
+								getPanier();
+							}
+							else if (xhr.status == 401){
+								alert("La session a expiré");
+
+								// clear username storage
+					            sessionStorage.clear();
+					            // delete authentication token
+					            eraseCookie('authentication');
+					            document.location.href="../index.html";
+							}
 						}
 					}
-				}
 
-				xhr.open("DELETE","http://localhost:8080/SR03/api/commande/user/"+sessionStorage.getItem('username')+"/jeu/"+idJeu+"/console/"+idConsole,true);
-				xhr.setRequestHeader("Authorization", readCookie("authentication"));
-				xhr.send(null);
+					xhr.open("DELETE","http://localhost:8080/SR03/api/commande/user/"+sessionStorage.getItem('username')+"/jeu/"+idJeu+"/console/"+idConsole,true);
+					xhr.setRequestHeader("Authorization", readCookie("authentication"));
+					xhr.send(null);
 
-			});
+				});
+			removeFromCart.innerHTML = "Remove";
+
+		infos2.appendChild(price);
+		infos2.appendChild(removeFromCart);
+
 
 		// Fill cell
-        cell1.appendChild(imagenode);
-        cell2.appendChild(title);
-        cell3.appendChild(consolenode);
-        cell4.appendChild(quantity);
-        cell5.appendChild(lineprice);
-		cell6.appendChild(removeFromCart);
-
-		// Fill row
-        row.appendChild(cell1);
-        row.appendChild(cell2);
-        row.appendChild(cell3);
-        row.appendChild(cell4);
-        row.appendChild(cell5);
-        row.appendChild(cell6);
-        cartTable.appendChild(row);
+        newRow.appendChild(imagenode);
+        newRow.appendChild(infos);
+        newRow.appendChild(infos2);
+        content.appendChild(newRow);
 }
 
 
