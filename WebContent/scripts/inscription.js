@@ -9,8 +9,6 @@ function surligne(champ, erreur)
 
 function verifLogin(champ)
 {
-	// TODO : ajouter vérif login existant
-
    if(champ.value.length < 2 || champ.value.length > 25)
    {
       surligne(champ, true);
@@ -73,9 +71,9 @@ function verifCodePostal(champ)
 
 function verifPass(champ)
 {
-	// TODO : ajouter vérif login existant
+   var regex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$/;
 
-   if(champ.value.length < 8)
+   if(!regex.test(champ.value))
    {
       surligne(champ, true);
       return false;
@@ -105,6 +103,11 @@ function verifIncriptionForm(myself)
    {
 		sendForm(f);
    	return true;
+   }
+   else if (!passOk)
+   {
+      alert("Mot de passe trop faible. Viellez à utiliser des lettre majuscules, minuscules, des chiffres et à ce que votre mot de passe soit d'au moins 6 caratères");
+      return false;
    }
    else if (f.password.value !== f.password_conf.value)
 	{
